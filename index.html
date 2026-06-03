@@ -12,7 +12,13 @@
 <title>FitTrack</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--bg:#0a0a0a;--s1:#141414;--s2:#1c1c1c;--s3:#242424;--border:#2a2a2a;--border2:#333;--t1:#f0f0f0;--t2:#8a8a8a;--t3:#555;--green:#4ade80;--green-bg:#0c2318;--green-dim:#166534;--blue:#60a5fa;--blue-bg:#0c1e36;--amber:#fbbf24;--amber-bg:#2d1f08;--red:#f87171;--red-bg:#2d0f0f;--nav:60px;--safe-b:env(safe-area-inset-bottom,0px)}
+:root{--bg:#0a0a0a;--s1:#141414;--s2:#1c1c1c;--s3:#242424;--border:#2a2a2a;--border2:#333;
+  --t1:#f0f0f0;--t2:#8a8a8a;--t3:#555;
+  --green:#4ade80;--green-bg:#0c2318;--green-dim:#166534;
+  --blue:#60a5fa;--blue-bg:#0c1e36;
+  --amber:#fbbf24;--amber-bg:#2d1f08;
+  --red:#f87171;--red-bg:#2d0f0f;
+  --nav:60px;--safe-b:env(safe-area-inset-bottom,0px)}
 html,body{height:100%;overflow:hidden}
 body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.5}
 #root{height:100%;display:flex;flex-direction:column}
@@ -21,40 +27,71 @@ body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSyst
 .card{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:12px}
 .card-title{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--t2);text-transform:uppercase;margin-bottom:10px}
 h2{font-size:22px;font-weight:700;letter-spacing:-.5px}
-.muted{color:var(--t2);font-size:13px}
+/* Progress bars */
 .pbar-wrap{margin-bottom:14px}
 .pbar-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
 .pbar-label{font-size:13px;font-weight:600}
 .pbar-nums{font-size:12px;color:var(--t2)}
 .pbar-bg{height:7px;background:var(--s3);border-radius:4px;overflow:hidden}
 .pbar-fill{height:100%;border-radius:4px;transition:width .4s ease}
+/* Buttons */
 .btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:12px 18px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;font-family:inherit;transition:opacity .15s,transform .1s;user-select:none}
 .btn:active{opacity:.75;transform:scale(.97)}
 .btn-primary{background:var(--green);color:#0a0a0a}
 .btn-secondary{background:var(--s3);color:var(--t1);border:1px solid var(--border2)}
 .btn-ghost{background:transparent;color:var(--t2);border:1px solid var(--border)}
+.btn-danger{background:var(--red-bg);color:var(--red);border:1px solid #7f1d1d}
 .btn-full{width:100%}
 .btn-sm{padding:8px 14px;font-size:13px;border-radius:8px}
 .btn:disabled{opacity:.35;cursor:default}
 .btn-row{display:flex;gap:8px;margin-top:4px}
+/* Forms */
 .field{margin-bottom:10px}
 .field label{display:block;font-size:11px;font-weight:600;color:var(--t2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px}
-select,input,textarea{width:100%;padding:10px 12px;background:var(--s1);border:1px solid var(--border2);border-radius:9px;color:var(--t1);font-size:14px;font-family:inherit;outline:none;appearance:none;-webkit-appearance:none}
+select,input:not([type=range]):not([type=checkbox]),textarea{width:100%;padding:10px 12px;background:var(--s1);border:1px solid var(--border2);border-radius:9px;color:var(--t1);font-size:14px;font-family:inherit;outline:none;-webkit-appearance:none;appearance:none}
 select:focus,input:focus,textarea:focus{border-color:var(--green)}
 textarea{resize:none;min-height:72px}
-input[type=range]{padding:0;height:28px;accent-color:var(--green);background:transparent;border:none}
 .input-row{display:grid;gap:8px}
-.input-row.cols2{grid-template-columns:1fr 1fr}
+.cols2{grid-template-columns:1fr 1fr}
+.cols3{grid-template-columns:1fr 1fr 1fr}
+/* ── IMPROVED SLIDERS ─────────────────────────────────── */
+.slider-wrap{margin-bottom:2px}
+.slider-track{position:relative;height:36px;display:flex;align-items:center}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:var(--s3);outline:none;border:none;padding:0;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--green);cursor:pointer;border:3px solid var(--bg);box-shadow:0 0 0 2px var(--green),0 2px 8px rgba(74,222,128,.35)}
+input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--green);cursor:pointer;border:3px solid var(--bg);box-shadow:0 0 0 2px var(--green)}
+input[type=range]::-webkit-slider-runnable-track{border-radius:3px;height:6px}
+.slider-labels{display:flex;justify-content:space-between;margin-top:2px}
+.slider-labels span{font-size:10px;color:var(--t3)}
+.slider-value{font-size:22px;font-weight:800;text-align:center;margin-bottom:2px;color:var(--green)}
+/* Chips */
 .chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
 .chip-green{background:var(--green-bg);color:var(--green)}.chip-blue{background:var(--blue-bg);color:var(--blue)}
 .chip-amber{background:var(--amber-bg);color:var(--amber)}.chip-red{background:var(--red-bg);color:var(--red)}.chip-gray{background:var(--s3);color:var(--t2)}
+/* Bottom Nav */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav) + var(--safe-b));padding-bottom:var(--safe-b);background:var(--s1);border-top:1px solid var(--border);display:flex;z-index:100}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:transparent;color:var(--t3);font-family:inherit;font-size:10px;font-weight:500;padding-bottom:2px;transition:color .15s}
 .nav-item.active{color:var(--green)}
 .nav-icon{font-size:22px;line-height:1}
+/* Header bar */
+.header-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px 0;flex-shrink:0}
+.hb-logo{font-size:16px;font-weight:700;color:var(--t1);letter-spacing:-.3px}
+.avatar-btn{width:36px;height:36px;border-radius:50%;background:var(--green);border:none;cursor:pointer;font-size:15px;font-weight:700;color:#0a0a0a;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* Profile sheet */
+.sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:flex-end}
+.sheet{background:var(--s1);border-radius:20px 20px 0 0;padding:20px 20px calc(24px + var(--safe-b));width:100%;max-height:85vh;overflow-y:auto}
+.sheet-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 20px}
+.profile-avatar{width:64px;height:64px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#0a0a0a;margin:0 auto 8px}
+.profile-name{text-align:center;font-size:18px;font-weight:700;margin-bottom:2px}
+.profile-email{text-align:center;font-size:13px;color:var(--t2);margin-bottom:20px}
+.menu-item{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer;background:none;border-left:none;border-right:none;border-top:none;width:100%;text-align:left;font-family:inherit;color:var(--t1);font-size:14px}
+.menu-item:last-child{border-bottom:none}
+.menu-item-icon{font-size:20px;width:28px;text-align:center}
+/* Exercise chips */
 .ex-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .ex-chip{display:flex;align-items:center;gap:4px;background:var(--blue-bg);color:var(--blue);border-radius:7px;padding:4px 9px;font-size:12px}
 .ex-chip button{background:none;border:none;color:inherit;opacity:.6;cursor:pointer;font-size:15px;padding:0;line-height:1}
+/* Log entries */
 .log-entry{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:12px 14px;margin-bottom:8px}
 .log-entry-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
 .log-entry-title{font-size:14px;font-weight:600}
@@ -62,21 +99,27 @@ input[type=range]{padding:0;height:28px;accent-color:var(--green);background:tra
 .log-entry-exs{margin-top:7px;padding-top:7px;border-top:1px solid var(--border)}
 .log-entry-ex{font-size:12px;color:var(--t2);padding:2px 0;display:flex;justify-content:space-between}
 .del-btn{background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px;padding:0;line-height:1}
-.today-header{padding:20px 16px 8px}
+.del-btn:hover{color:var(--red)}
+/* Today */
+.today-header{padding:16px 16px 8px}
 .today-greeting{font-size:13px;color:var(--t2);margin-bottom:2px}
 .today-day{font-size:26px;font-weight:700;letter-spacing:-.5px}
-.week-badge{display:inline-flex;align-items:center;gap:4px;background:var(--s2);border:1px solid var(--border);border-radius:7px;padding:3px 10px;font-size:12px;color:var(--t2);margin-top:6px}
+.week-badge{display:inline-flex;align-items:center;background:var(--s2);border:1px solid var(--border);border-radius:7px;padding:3px 10px;font-size:12px;color:var(--t2);margin-top:6px}
 .workout-card-type{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);margin-bottom:4px}
 .workout-card-name{font-size:18px;font-weight:700;margin-bottom:10px}
 .workout-exercises{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
 .workout-exercises li{font-size:13px;color:var(--t2);display:flex;align-items:center;gap:6px}
 .workout-exercises li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0}
-.workout-rest{color:var(--t2);font-size:14px}
+/* Meal builder */
 .builder-card{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px}
-.builder-title{font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:7px}
 .macro-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
 .mc{padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600}
 .mc-k{background:var(--green-bg);color:var(--green)}.mc-p{background:var(--blue-bg);color:var(--blue)}
+.gram-adj{display:flex;align-items:center;gap:8px;margin-top:6px}
+.gram-adj span{font-size:11px;color:var(--t2);white-space:nowrap}
+.gram-in{width:75px;padding:6px 9px;text-align:center;font-size:13px}
+.rec-note{background:var(--blue-bg);border-radius:8px;padding:8px 11px;font-size:12px;color:var(--blue);margin:6px 0;line-height:1.5}
+/* Quick add */
 .qa-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .qa-cat{padding:6px 12px;border-radius:20px;border:1px solid var(--border2);font-size:12px;font-weight:500;cursor:pointer;background:transparent;color:var(--t2);font-family:inherit;transition:all .12s}
 .qa-cat.active{background:var(--green);color:#0a0a0a;border-color:var(--green)}
@@ -85,9 +128,28 @@ input[type=range]{padding:0;height:28px;accent-color:var(--green);background:tra
 .qa-item-name{font-size:13px;font-weight:500;flex:1}
 .qa-item-macros{font-size:11px;color:var(--t2);margin-top:1px}
 .qa-item-add{padding:5px 12px;background:var(--s3);border:none;border-radius:7px;color:var(--t1);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap}
+.custom-row{display:grid;grid-template-columns:1fr 60px 60px auto;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.custom-row input{padding:8px 10px;font-size:13px}
+/* Surplus warning */
+.surplus-box{background:var(--red-bg);border:1px solid #7f1d1d;border-radius:11px;padding:12px 14px;margin-bottom:10px}
+.surplus-title{font-size:13px;font-weight:600;color:var(--red);margin-bottom:3px}
+.surplus-text{font-size:12px;color:var(--t2);line-height:1.5}
+/* Suggestions */
+.sug-box{background:var(--amber-bg);border:1px solid #78350f;border-radius:11px;padding:12px 14px;margin-bottom:10px}
+.sug-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
+.sug-item:last-child{margin-bottom:0}
+.sug-text{font-size:12px;color:var(--t1);flex:1;line-height:1.5}
+.sug-add{padding:4px 10px;background:var(--amber);color:#0a0a0a;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
+/* Done card */
+.done-card{background:var(--green-bg);border:1px solid var(--green-dim);border-radius:14px;padding:16px}
+.done-title{font-size:16px;font-weight:700;color:var(--green);margin-bottom:12px}
+.done-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.done-stat{background:var(--s2);border-radius:9px;padding:10px 12px}
+.done-stat-val{font-size:18px;font-weight:700;margin:2px 0}
+.done-stat-lbl{font-size:10px;color:var(--t2);text-transform:uppercase}
+.done-stat-sub{font-size:11px;margin-top:2px}
+/* Progress */
 .prog-card{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px}
-.prog-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.prog-card-name{font-size:15px;font-weight:600}
 .prog-two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
 .prog-col-lbl{font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
 .prog-col-val{font-size:16px;font-weight:700}
@@ -102,46 +164,61 @@ input[type=range]{padding:0;height:28px;accent-color:var(--green);background:tra
 .rm-table tr:last-child td{border-bottom:none}
 .rm-table tr.cur td{background:var(--green-bg)}
 .rm-logged{font-size:10px;color:var(--green);margin-top:2px}
-.sug-box{background:var(--amber-bg);border:1px solid #78350f;border-radius:11px;padding:12px 14px;margin-bottom:10px}
-.sug-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
-.sug-item:last-child{margin-bottom:0}
-.sug-text{font-size:12px;color:var(--t1);flex:1;line-height:1.5}
-.sug-add{padding:4px 10px;background:var(--amber);color:#0a0a0a;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
-.done-card{background:var(--green-bg);border:1px solid var(--green-dim);border-radius:14px;padding:16px}
-.done-title{font-size:16px;font-weight:700;color:var(--green);margin-bottom:12px}
-.done-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.done-stat{background:var(--s2);border-radius:9px;padding:10px 12px}
-.done-stat-val{font-size:18px;font-weight:700;margin:2px 0}
-.done-stat-lbl{font-size:10px;color:var(--t2);text-transform:uppercase}
-.done-stat-sub{font-size:11px;margin-top:2px}
-.gram-adj{display:flex;align-items:center;gap:8px;margin-top:6px}
-.gram-adj span{font-size:11px;color:var(--t2);white-space:nowrap}
-.gram-in{width:75px;padding:6px 9px;text-align:center;font-size:13px}
-.rec-note{background:var(--blue-bg);border-radius:8px;padding:8px 11px;font-size:12px;color:var(--blue);margin:6px 0;line-height:1.5}
-.slider-row{display:flex;align-items:center;gap:8px}
-.slider-row input{flex:1}
-.slider-val{font-size:15px;font-weight:700;min-width:24px;color:var(--green)}
-.empty{text-align:center;padding:32px 16px;color:var(--t3);font-size:13px;line-height:1.6}
-.custom-row{display:grid;grid-template-columns:1fr 60px 60px auto;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
-.custom-row input{padding:8px 10px;font-size:13px}
 /* Auth */
-.auth-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px;max-width:420px;margin:0 auto;width:100%}
-.auth-logo{text-align:center;margin-bottom:8px;font-size:40px}
-.auth-title{text-align:center;font-size:24px;font-weight:700;margin-bottom:4px}
-.auth-sub{text-align:center;color:var(--t2);font-size:13px;margin-bottom:24px}
+.auth-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;padding:28px 24px;max-width:420px;margin:0 auto;width:100%}
+.auth-logo{text-align:center;margin-bottom:8px;font-size:44px}
+.auth-title{text-align:center;font-size:26px;font-weight:700;margin-bottom:3px}
+.auth-sub{text-align:center;color:var(--t2);font-size:13px;margin-bottom:26px}
 .auth-tabs{display:flex;background:var(--s2);border-radius:10px;padding:3px;margin-bottom:18px}
 .auth-tab{flex:1;padding:9px;border:none;background:transparent;color:var(--t2);font-family:inherit;font-size:14px;font-weight:600;border-radius:8px;cursor:pointer}
 .auth-tab.active{background:var(--green);color:#0a0a0a}
-.auth-msg{padding:10px 12px;border-radius:9px;font-size:13px;margin-bottom:12px;line-height:1.5}
-.auth-msg.err{background:var(--red-bg);color:var(--red)}
-.auth-msg.ok{background:var(--green-bg);color:var(--green)}
+.msg-box{padding:10px 12px;border-radius:9px;font-size:13px;margin-bottom:12px;line-height:1.5}
+.msg-err{background:var(--red-bg);color:var(--red)}
+.msg-ok{background:var(--green-bg);color:var(--green)}
+.msg-info{background:var(--blue-bg);color:var(--blue)}
+/* Loading */
 .loading-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:var(--t2)}
 .spinner{width:32px;height:32px;border:3px solid var(--s3);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.config-warn{margin:24px;padding:18px;background:var(--amber-bg);border:1px solid #78350f;border-radius:12px;font-size:13px;line-height:1.6;color:var(--t1)}
-.config-warn code{background:var(--s1);padding:2px 6px;border-radius:4px;font-size:12px;color:var(--amber)}
-.header-bar{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0}
-.logout-btn{background:var(--s2);border:1px solid var(--border);color:var(--t2);font-size:12px;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit}
+/* Onboarding */
+.onboarding-wrap{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column}
+.ob-step{max-width:420px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;justify-content:center}
+.ob-welcome{text-align:center;margin-bottom:32px}
+.ob-emoji{font-size:56px;margin-bottom:12px}
+.ob-title{font-size:26px;font-weight:800;margin-bottom:8px}
+.ob-sub{color:var(--t2);font-size:14px;line-height:1.6}
+.ob-section-title{font-size:13px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.goal-btn{padding:12px 10px;background:var(--s2);border:2px solid var(--border);border-radius:12px;cursor:pointer;font-family:inherit;color:var(--t1);font-size:13px;font-weight:500;text-align:center;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.goal-btn.sel{border-color:var(--green);background:var(--green-bg);color:var(--green)}
+.goal-btn-icon{font-size:24px}
+.age-options{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.age-btn{padding:9px 16px;background:var(--s2);border:2px solid var(--border);border-radius:9px;cursor:pointer;font-family:inherit;color:var(--t1);font-size:13px;font-weight:500;transition:all .15s}
+.age-btn.sel{border-color:var(--green);background:var(--green-bg);color:var(--green)}
+.step-dots{display:flex;justify-content:center;gap:6px;margin-bottom:20px}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--s3)}
+.step-dot.active{background:var(--green);width:20px;border-radius:4px}
+/* Optimize popup */
+.optimize-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px}
+.optimize-card{background:var(--s2);border:1px solid var(--green-dim);border-radius:20px;padding:24px;max-width:360px;width:100%;text-align:center}
+.optimize-emoji{font-size:48px;margin-bottom:12px}
+.optimize-title{font-size:20px;font-weight:700;margin-bottom:8px}
+.optimize-text{color:var(--t2);font-size:14px;line-height:1.6;margin-bottom:20px}
+/* Meal history */
+.date-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.date-nav-btn{padding:7px 12px;background:var(--s2);border:1px solid var(--border);border-radius:8px;color:var(--t1);cursor:pointer;font-size:16px;border:none;background:var(--s3);border-radius:8px}
+.date-nav input[type=date]{flex:1;font-size:13px;padding:8px 10px}
+/* Admin */
+.admin-user-card{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px}
+.admin-user-card:hover{border-color:var(--green-dim)}
+.admin-avatar{width:40px;height:40px;border-radius:50%;background:var(--blue-bg);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--blue);flex-shrink:0}
+.back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--t2);cursor:pointer;font-family:inherit;font-size:13px;margin-bottom:14px;padding:0}
+.empty{text-align:center;padding:32px 16px;color:var(--t3);font-size:13px;line-height:1.6}
+/* Cardio fields */
+.cardio-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.cardio-stat{background:var(--s1);border:1px solid var(--border);border-radius:9px;padding:10px;text-align:center}
+.cardio-stat label{display:block;font-size:10px;color:var(--t2);text-transform:uppercase;margin-bottom:4px}
+.cardio-stat input{background:transparent;border:none;text-align:center;font-size:18px;font-weight:700;color:var(--t1);width:100%;padding:0}
 </style>
 </head>
 <body>
@@ -151,29 +228,30 @@ input[type=range]{padding:0;height:28px;accent-color:var(--green);background:tra
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script type="text/babel">
-const {useState,useEffect,useCallback,useMemo}=React;
+const {useState,useEffect,useMemo,useCallback,useRef}=React;
 
-// ════════════════════════════════════════════════════════════════
-//  ⚙️ KONFIGURATION — klistra in dina Supabase-uppgifter här
-//  (Supabase Dashboard → Project Settings → API)
-// ════════════════════════════════════════════════════════════════
-const SUPABASE_URL = 'https://emvnlcajpjjsmbdifurv.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_-8y4AjLxzHqFsT7XKj5ftw_bhLkfGoS';
-// ════════════════════════════════════════════════════════════════
+// ── CONFIG ──────────────────────────────────────────────────────
+const SUPABASE_URL='https://emvnlcajpjjsmbdifurv.supabase.co';
+const SUPABASE_KEY='sb_publishable_-8y4AjLxzHqFsT7XKj5ftw_bhLkfGoS';
+const ADMIN_EMAIL='eni_96@hotmail.com';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const configured = SUPABASE_URL!=='DIN_SUPABASE_URL' && SUPABASE_ANON_KEY!=='DIN_SUPABASE_ANON_KEY';
-const sb = configured ? supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY) : null;
-
-// ══ DATA ════════════════════════════════════════════════════════
-const TRAINING_PLAN={
-  1:{label:'Gymdag',name:'Gym — Underkropp',icon:'🏋️',type:'gym',exs:['Assault bike 6–8×10s','Knäböj 4×5 (RPE 7–8)','Rumänsk marklyft 4×6','Bulgariskt utfallssteg','Box jumps 3×5','Copenhagen plank']},
-  2:{label:'Dubbel dag',name:'Cardio Step + Fotboll',icon:'⚽',type:'football',exs:['Cardio Step 45 min','Fotbollsträning','Ät ordentligt 2–3 tim innan']},
-  3:{label:'Gymdag',name:'Gym — Överkropp',icon:'💪',type:'gym',exs:['Bänkpress 4×5','Chins 4×6','Skivstångsrodd','Axelpress','Laterala hopp 3×6','Armövningar — klart på 45 min']},
-  4:{label:'Fotbollsdag',name:'Fotboll',icon:'⚽',type:'football',exs:['Fotbollsträning','Copenhagen plank + core efter']},
-  5:{label:'Återhämtning',name:'Återhämtning',icon:'🚶',type:'rest',exs:['20–30 min backgång eller lätt jogg','Zon 2 — ingen intensitet']},
-  6:{label:'Vilodag',name:'Vila',icon:'😴',type:'rest',exs:['Full återhämtning','Sov, gå, ät bra']},
+// ── SCHEDULE DATA ───────────────────────────────────────────────
+const DEFAULT_PLAN={
+  1:{label:'Gymdag',name:'Gym — Underkropp',icon:'🏋️',type:'gym',exs:['Assault bike 6–8×10s','Knäböj 4×5','RDL 4×6','Bulgariskt utfallssteg','Box jumps 3×5','Copenhagen plank']},
+  2:{label:'Dubbel dag',name:'Cardio Step + Fotboll',icon:'⚽',type:'football',exs:['Cardio Step 45 min','Fotbollsträning']},
+  3:{label:'Gymdag',name:'Gym — Överkropp',icon:'💪',type:'gym',exs:['Bänkpress 4×5','Chins 4×6','Skivstångsrodd','Axelpress','Laterala hopp 3×6','Armövningar']},
+  4:{label:'Fotbollsdag',name:'Fotboll',icon:'⚽',type:'football',exs:['Fotbollsträning','Copenhagen plank + core']},
+  5:{label:'Återhämtning',name:'Återhämtning',icon:'🚶',type:'rest',exs:['20–30 min promenad','Zon 2 – ingen intensitet']},
+  6:{label:'Vilodag',name:'Vila',icon:'😴',type:'rest',exs:['Full återhämtning']},
   0:{label:'Vilodag',name:'Vila',icon:'😴',type:'rest',exs:['Full återhämtning']},
 };
+const GOAL_PLANS={
+  'Viktnedgång':{1:{label:'Gymdag',name:'Gym — Helkropp',icon:'🏋️',type:'gym',exs:['Knäböj 3×10','Bänkpress 3×10','Rodd 3×10','Rumänsk marklyft 3×10']},2:{label:'Cardio',name:'Cardio 35 min',icon:'🏃',type:'cardio',exs:['35 min löpning/cykel, puls 70–80%']},3:{label:'Gymdag',name:'Gym — Underkropp',icon:'🏋️',type:'gym',exs:['Knäböj','RDL','Lunges','Hip thrust']},4:{label:'Promenad',name:'Promenad/Aktivitet',icon:'🚶',type:'rest',exs:['30+ min promenad','Sikta på 10 000 steg']},5:{label:'Vila',name:'Vila',icon:'😴',type:'rest',exs:['Återhämtning']},6:{label:'Cardio',name:'Cardio/Löpning',icon:'🏃',type:'cardio',exs:['40 min löpning eller cykel']},0:{label:'Vila',name:'Vila',icon:'😴',type:'rest',exs:['Återhämtning']}},
+  'Bulk / Muskeluppbyggnad':{1:{label:'Gymdag',name:'Bröst + Triceps',icon:'🏋️',type:'gym',exs:['Bänkpress 4×6','Lutande bänkpress 3×8','Dips 3×10','Triceps 3×12']},2:{label:'Gymdag',name:'Rygg + Biceps',icon:'🏋️',type:'gym',exs:['Marklyft 4×5','Chins 4×6','Kabelrodd 3×10','Bicepscurl 3×12']},3:{label:'Vila',name:'Vila / Lätt promenad',icon:'🚶',type:'rest',exs:['Aktiv återhämtning']},4:{label:'Gymdag',name:'Ben + Skuldror',icon:'🏋️',type:'gym',exs:['Knäböj 4×6','RDL 3×8','Axelpress 4×8','Axelhöjningar 3×15']},5:{label:'Gymdag',name:'Push/Pull',icon:'💪',type:'gym',exs:['Arnold press 3×10','Maskinsrodd 3×12','Dips 3×12','Face pulls 3×15']},6:{label:'Vila',name:'Vila',icon:'😴',type:'rest',exs:['Full återhämtning']},0:{label:'Vila',name:'Vila',icon:'😴',type:'rest',exs:['Full återhämtning']}},
+  'Löpning / Kondition':{1:{label:'Löpning',name:'Intervallöpning',icon:'🏃',type:'cardio',exs:['8×400m med 90s vila','Puls 85–90%']},2:{label:'Vila',name:'Vila',icon:'😴',type:'rest',exs:['Aktiv återhämtning']},3:{label:'Löpning',name:'Lång distans',icon:'🏃',type:'cardio',exs:['60–90 min lugn löpning','Puls 65–75%']},4:{label:'Gymdag',name:'Styrka (stöd)',icon:'🏋️',type:'gym',exs:['Knäböj 3×8','Hip thrust 3×10','Copenhagen plank']},5:{label:'Löpning',name:'Tempolöpning',icon:'🏃',type:'cardio',exs:['20–30 min i tävlingstempo']},6:{label:'Löpning',name:'Lång löpning',icon:'🏃',type:'cardio',exs:['Veckans längsta pass','Lugn takt']},0:{label:'Vila',name:'Vila',icon:'😴',type:'rest',exs:['Stretch + återhämtning']}},
+};
+const CARDIO_TYPES=['Löpning','Promenad/Powerwalk','Cykling','Simning','Intervaller','Stairmaster','Roddmaskin','Cardio Step'];
 const DAY_TYPE_MAP={1:'gym',2:'tuesday',3:'gym',4:'football',5:'rest',6:'rest',0:'rest'};
 const DAY_TARGETS={tuesday:{kcal:2800,protein:190},gym:{kcal:2400,protein:185},football:{kcal:2600,protein:185},rest:{kcal:2200,protein:180}};
 const PROTEINS=[{n:'Kycklingfilé',k:110,p:23},{n:'Kycklinglårfilé',k:130,p:19},{n:'Nötfärs 10% fett',k:160,p:20},{n:'Nötfärs 5% fett',k:120,p:21},{n:'Lax',k:180,p:20},{n:'Tonfisk i vatten',k:100,p:23},{n:'Torsk / vit fisk',k:82,p:18},{n:'Räkor (kokta)',k:90,p:18},{n:'Nötbiff / entrecote',k:195,p:20}];
@@ -181,190 +259,328 @@ const CARBS=[{n:'Havreris - Frebaco Kvarn (torrt)',k:360,p:13},{n:'Ris (torrt)',
 const VEGS=[{n:'Broccoli',k:34,p:3},{n:'Blandad sallad',k:20,p:2},{n:'Spenat',k:23,p:3},{n:'Haricots verts',k:31,p:2},{n:'Paprika',k:31,p:1},{n:'Zucchini',k:17,p:1},{n:'Gurka + tomat',k:18,p:1}];
 const FATS=[{n:'Ingen extra fett',k:0},{n:'Olivolja 1 msk (14g)',k:124},{n:'Avokado ½ (70g)',k:112},{n:'Fetaost (30g)',k:80}];
 const PAIRINGS={'Kycklingfilé':'Havreris - Frebaco Kvarn (torrt)','Kycklinglårfilé':'Havreris - Frebaco Kvarn (torrt)','Nötfärs 10% fett':'Potatis (rå)','Nötfärs 5% fett':'Pasta (torrt)','Lax':'Potatis (rå)','Tonfisk i vatten':'Pasta (torrt)','Torsk / vit fisk':'Havreris - Frebaco Kvarn (torrt)','Räkor (kokta)':'Havreris - Frebaco Kvarn (torrt)','Nötbiff / entrecote':'Potatis (rå)'};
-const QUICK_ITEMS={
-  'Frukost':[{n:'80g havregryn + mjölk + banan + 3 ägg',k:720,p:37},{n:'4 ägg + 2 skivor bröd + banan',k:560,p:32},{n:'80g havregryn + vassle + mjölk',k:545,p:43},{n:'60g havregryn + mjölk + 1 ägg',k:400,p:18},{n:'200g Grek yoghurt + müsli + bär',k:370,p:20},{n:'4 ägg + grönsaker',k:345,p:28}],
-  'Pre-snack':[{n:'50g havregryn + 200ml mjölk',k:310,p:11},{n:'1 banan + 3 riskakor',k:195,p:3},{n:'1 banan + jordnötssmör',k:185,p:5},{n:'50g havregryn + vatten + banan',k:275,p:8}],
-  'Kvällssnack':[{n:'200g Grek yoghurt + kasein',k:240,p:37},{n:'1 scoop kasein + 250ml mjölk',k:240,p:30},{n:'200g keso',k:160,p:22},{n:'1 scoop kasein + vatten',k:120,p:25}],
-  'Snack':[{n:'1 banan',k:89,p:1},{n:'1 äpple',k:52,p:0},{n:'1 kiwi',k:61,p:1},{n:'Proteinshake + vatten',k:120,p:25},{n:'2 hårdkokta ägg',k:155,p:13},{n:'Näve mandlar 30g',k:174,p:6}],
-  'Dryck':[{n:'250ml helmjölk',k:154,p:8},{n:'1 scoop vassle + 250ml helmjölk',k:275,p:33},{n:'1 scoop vassle + 250ml lättmjölk',k:235,p:34},{n:'1 scoop vassle + vatten',k:120,p:25}],
-};
-const EXERCISE_GROUPS={
-  '🦵 Underkropp':['Knäböj (Back Squat)','Front Squat','Goblet Squat','Rumänsk marklyft (RDL)','Marklyft','Bulgariskt utfallssteg','Utfallssteg','Benpress','Hip Thrust','Nordic Hamstring Curl','Bencurl','Vadpress','Box Jumps','Laterala hopp','Step-ups','Assault Bike Sprints'],
-  '💪 Överkropp':['Bänkpress','Lutande bänkpress','Axelpress / Military Press','Arnold Press','Chins (Pull-ups)','Lat Pulldown','Skivstångsrodd','Kabelrodd','Maskinsrodd','Face Pulls','Dips','Triceps pressdown','Bicepscurl','Hammarcurl','Axelhöjning'],
-  '🧱 Core / Rehab':['Copenhagen Plank','Dead Bug','Sidoplanka','Planka','Hängande benlyft','Ab Wheel','Russian Twist'],
-  '🏃 Kondition':['Incline Walk','Stairmaster','Löpbandslöpning','Intervaller','Hoppreppa','Roddmaskin'],
-};
-const PROGRESSIONS={
-  'Knäböj (Back Squat)':{icon:'🏋️',type:'kg',steps:[{w:[22,23],kg:87.5,sets:4,reps:5},{w:[24,25],kg:90,sets:4,reps:5},{w:[26,27],kg:92.5,sets:4,reps:5},{w:[28,29],kg:95,sets:4,reps:4},{w:[30,32],kg:100,sets:4,reps:4}]},
-  'Rumänsk marklyft (RDL)':{icon:'🔩',type:'kg',steps:[{w:[22,23],kg:85,sets:4,reps:6},{w:[24,25],kg:87.5,sets:4,reps:6},{w:[26,27],kg:90,sets:4,reps:5},{w:[28,29],kg:92.5,sets:4,reps:5},{w:[30,32],kg:95,sets:4,reps:5}]},
-  'Bänkpress':{icon:'💪',type:'kg',steps:[{w:[22,23],kg:72.5,sets:4,reps:6},{w:[24,25],kg:75,sets:4,reps:6},{w:[26,27],kg:77.5,sets:4,reps:5},{w:[28,29],kg:80,sets:4,reps:5},{w:[30,32],kg:82.5,sets:4,reps:5}]},
-  'Chins (Pull-ups)':{icon:'🧗',type:'reps',steps:[{w:[22,23],rt:6,sets:4,note:'BW'},{w:[24,25],rt:7,sets:4,note:'BW'},{w:[26,27],rt:8,sets:4,note:'BW'},{w:[28,29],rt:8,sets:4,note:'+5kg'},{w:[30,32],rt:8,sets:4,note:'+10kg'}]},
-};
+const QUICK_ITEMS={'Frukost':[{n:'80g havregryn + mjölk + banan + 3 ägg',k:720,p:37},{n:'4 ägg + 2 skivor bröd + banan',k:560,p:32},{n:'80g havregryn + vassle + mjölk',k:545,p:43},{n:'60g havregryn + mjölk + ägg',k:400,p:18},{n:'200g Grek yoghurt + müsli',k:370,p:20},{n:'4 ägg + grönsaker',k:345,p:28}],'Pre-snack':[{n:'50g havregryn + 200ml mjölk',k:310,p:11},{n:'1 banan + 3 riskakor',k:195,p:3},{n:'1 banan + jordnötssmör',k:185,p:5},{n:'50g havregryn + vatten + banan',k:275,p:8}],'Kvällssnack':[{n:'200g Grek yoghurt + kasein',k:240,p:37},{n:'1 scoop kasein + 250ml mjölk',k:240,p:30},{n:'200g keso',k:160,p:22},{n:'1 scoop kasein + vatten',k:120,p:25}],'Snack':[{n:'1 banan',k:89,p:1},{n:'1 äpple',k:52,p:0},{n:'Proteinshake + vatten',k:120,p:25},{n:'2 hårdkokta ägg',k:155,p:13},{n:'Näve mandlar 30g',k:174,p:6}],'Dryck':[{n:'1 scoop vassle + 250ml helmjölk',k:275,p:33},{n:'1 scoop vassle + lättmjölk',k:235,p:34},{n:'1 scoop vassle + vatten',k:120,p:25},{n:'250ml helmjölk',k:154,p:8}]};
+const DEFAULT_EXERCISES={'🦵 Underkropp':['Knäböj (Back Squat)','Front Squat','Goblet Squat','Rumänsk marklyft (RDL)','Marklyft','Bulgariskt utfallssteg','Utfallssteg','Benpress','Hip Thrust','Nordic Hamstring Curl','Bencurl','Vadpress','Box Jumps','Laterala hopp','Step-ups','Assault Bike Sprints'],'💪 Överkropp':['Bänkpress','Lutande bänkpress','Axelpress / Military Press','Arnold Press','Chins (Pull-ups)','Lat Pulldown','Skivstångsrodd','Kabelrodd','Maskinsrodd','Cable Rows','Face Pulls','Dips','Triceps pressdown','Bicepscurl','Hammarcurl','Axelhöjning'],'🧱 Core / Rehab':['Copenhagen Plank','Dead Bug','Sidoplanka','Planka','Hängande benlyft','Ab Wheel','Russian Twist'],'🏃 Kondition':['Löpning','Powerwalk','Cykling','Simning','Stairmaster','Roddmaskin','Hoppreppa']};
+const PROGRESSIONS={'Knäböj (Back Squat)':{icon:'🏋️',type:'kg',steps:[{w:[22,23],kg:87.5,s:4,r:5},{w:[24,25],kg:90,s:4,r:5},{w:[26,27],kg:92.5,s:4,r:5},{w:[28,29],kg:95,s:4,r:4},{w:[30,32],kg:100,s:4,r:4}]},'Rumänsk marklyft (RDL)':{icon:'🔩',type:'kg',steps:[{w:[22,23],kg:85,s:4,r:6},{w:[24,25],kg:87.5,s:4,r:6},{w:[26,27],kg:90,s:4,r:5},{w:[28,29],kg:92.5,s:4,r:5},{w:[30,32],kg:95,s:4,r:5}]},'Bänkpress':{icon:'💪',type:'kg',steps:[{w:[22,23],kg:72.5,s:4,r:6},{w:[24,25],kg:75,s:4,r:6},{w:[26,27],kg:77.5,s:4,r:5},{w:[28,29],kg:80,s:4,r:5},{w:[30,32],kg:82.5,s:4,r:5}]},'Chins (Pull-ups)':{icon:'🧗',type:'reps',steps:[{w:[22,23],rt:6,s:4,note:'BW'},{w:[24,25],rt:7,s:4,note:'BW'},{w:[26,27],rt:8,s:4,note:'BW'},{w:[28,29],rt:8,s:4,note:'+5kg'},{w:[30,32],rt:8,s:4,note:'+10kg'}]}};
 const BW_TARGETS=[{w:[22,23],bw:88.5},{w:[24,25],bw:88},{w:[26,27],bw:87},{w:[28,29],bw:86},{w:[30,32],bw:85}];
 
-// ══ UTILS ════════════════════════════════════════════════════════
-const toDate=d=>d.toISOString().split('T')[0];
-const todayStr=()=>toDate(new Date());
-const fmtDateDisplay=d=>{const days=['Söndag','Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag'];const m=['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];return `${days[d.getDay()]} ${d.getDate()} ${m[d.getMonth()]}`;};
-const getCurrentWeek=wo=>{const w=wo.map(x=>parseInt(x.week)).filter(x=>!isNaN(x)&&x>0);return w.length?Math.max(...w):22;};
+// ── UTILS ────────────────────────────────────────────────────────
+const todayStr=()=>new Date().toISOString().split('T')[0];
+const fmtDate=d=>{const x=new Date(d+'T12:00:00');const days=['Sön','Mån','Tis','Ons','Tor','Fre','Lör'];const m=['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];return `${days[x.getDay()]} ${x.getDate()} ${m[x.getMonth()]}`;};
+const fmtDateLong=d=>{const x=new Date(d+'T12:00:00');const days=['Söndag','Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag'];const m=['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];return `${days[x.getDay()]} ${x.getDate()} ${m[x.getMonth()]}`;};
+const getWeek=wo=>{const w=wo.map(x=>parseInt(x.week)).filter(x=>!isNaN(x)&&x>0);return w.length?Math.max(...w):22;};
 function getStep(steps,week){for(const s of steps)if(week>=s.w[0]&&week<=s.w[1])return s;return week>steps[steps.length-1].w[1]?steps[steps.length-1]:steps[0];}
 function getBestKg(wo,n,wk){let b=null;wo.forEach(w=>{if(parseInt(w.week)!==wk||!w.exercises)return;w.exercises.forEach(e=>{if(e.name===n&&e.kg){const kg=parseFloat(e.kg);if(!b||kg>b.kg)b={kg,sets:parseInt(e.sets)||0,reps:parseInt(e.reps)||0};}});});return b;}
 function getBestReps(wo,n,wk){let b=null;wo.forEach(w=>{if(parseInt(w.week)!==wk||!w.exercises)return;w.exercises.forEach(e=>{if(e.name===n&&e.reps){const r=parseInt(e.reps);if(!b||r>b.reps)b={reps:r,sets:parseInt(e.sets)||0,kg:parseFloat(e.kg)||0};}});});return b;}
 const calcMac=(arr,i,g)=>{if(i<0||!arr[i])return{k:0,p:0};const x=arr[i],r=g/100;return{k:Math.round((x.k||0)*r),p:Math.round((x.p||0)*r)};};
+const isCardioType=t=>t&&(t.toLowerCase().includes('löpning')||t.toLowerCase().includes('cardio')||t.toLowerCase().includes('promenad')||t.toLowerCase().includes('powerwalk')||t.toLowerCase().includes('cykling')||t.toLowerCase().includes('simning')||t.toLowerCase().includes('intervall'));
+function updateSlider(el){if(!el)return;const v=(el.value-el.min)/(el.max-el.min)*100;el.style.background=`linear-gradient(to right,var(--green) ${v}%,var(--s3) ${v}%)`;}
+const getInitials=name=>{if(!name)return '?';return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);};
+const getPlan=(profile)=>{if(!profile||!profile.goals||!profile.goals.length)return DEFAULT_PLAN;const g=profile.goals[0];return GOAL_PLANS[g]||DEFAULT_PLAN;};
 
-// ══ SHARED COMPONENTS ════════════════════════════════════════════
+// ── SHARED COMPONENTS ────────────────────────────────────────────
 function PBar({label,val,max,unit=''}){
   const pct=Math.min(100,Math.round((val/Math.max(max,1))*100));
   const col=pct>=95?'var(--green)':pct>=70?'var(--amber)':'var(--blue)';
   return <div className="pbar-wrap"><div className="pbar-row"><span className="pbar-label">{label}</span><span className="pbar-nums">{val} / {max}{unit}{pct>=95?' ✅':''}</span></div><div className="pbar-bg"><div className="pbar-fill" style={{width:pct+'%',background:col}}/></div></div>;
 }
 const Chip=({children,type='gray'})=><span className={`chip chip-${type}`}>{children}</span>;
-function BottomNav({tab,setTab}){
+
+function Slider({label,min=0,max=10,value,onChange,leftLabel,rightLabel}){
+  const ref=useRef();
+  useEffect(()=>{if(ref.current)updateSlider(ref.current);},[value]);
+  return <div className="slider-wrap">
+    <div className="slider-value">{value}</div>
+    <div className="slider-track"><input ref={ref} type="range" min={min} max={max} value={value} onInput={e=>{updateSlider(e.target);onChange(+e.target.value);}}/></div>
+    {(leftLabel||rightLabel)&&<div className="slider-labels"><span>{leftLabel}</span><span>{rightLabel}</span></div>}
+  </div>;
+}
+
+function BottomNav({tab,setTab,isAdmin}){
   const items=[{id:'today',icon:'🏠',label:'Idag'},{id:'training',icon:'💪',label:'Träning'},{id:'food',icon:'🍽️',label:'Mat'},{id:'progress',icon:'📈',label:'Progress'}];
+  if(isAdmin)items.push({id:'admin',icon:'🔧',label:'Admin'});
   return <nav className="bottom-nav">{items.map(i=><button key={i.id} className={`nav-item${tab===i.id?' active':''}`} onClick={()=>setTab(i.id)}><span className="nav-icon">{i.icon}</span>{i.label}</button>)}</nav>;
 }
 
-// ══ AUTH SCREEN ═══════════════════════════════════════════════════
+// ── PROFILE SHEET ────────────────────────────────────────────────
+function ProfileSheet({session,profile,onClose,onLogout}){
+  const [view,setView]=useState('menu');
+  const [pw,setPw]=useState('');const [pw2,setPw2]=useState('');
+  const [msg,setMsg]=useState(null);const [busy,setBusy]=useState(false);
+  const name=profile?.display_name||session.user.user_metadata?.name||session.user.email;
+  const initials=getInitials(name);
+  async function changePassword(){
+    if(pw.length<6){setMsg({t:'err',m:'Lösenordet måste vara minst 6 tecken.'});return;}
+    if(pw!==pw2){setMsg({t:'err',m:'Lösenorden matchar inte.'});return;}
+    setBusy(true);
+    const {error}=await sb.auth.updateUser({password:pw});
+    setBusy(false);
+    if(error)setMsg({t:'err',m:error.message});
+    else{setMsg({t:'ok',m:'✅ Lösenord uppdaterat!'});setPw('');setPw2('');}
+  }
+  return <div className="sheet-overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+    <div className="sheet">
+      <div className="sheet-handle"/>
+      {view==='menu'&&<>
+        <div className="profile-avatar">{initials}</div>
+        <div className="profile-name">{name}</div>
+        <div className="profile-email">{session.user.email}</div>
+        <button className="menu-item" onClick={()=>setView('password')}><span className="menu-item-icon">🔑</span>Byt lösenord</button>
+        <button className="menu-item" onClick={()=>{onClose();setTimeout(()=>window.dispatchEvent(new CustomEvent('showOnboarding')),100);}}><span className="menu-item-icon">⚙️</span>Mina mål & schema</button>
+        <button className="menu-item" style={{color:'var(--red)'}} onClick={onLogout}><span className="menu-item-icon">🚪</span>Logga ut</button>
+      </>}
+      {view==='password'&&<>
+        <button className="back-btn" onClick={()=>{setView('menu');setMsg(null);}}><span>←</span> Tillbaka</button>
+        <h2 style={{marginBottom:16}}>Byt lösenord</h2>
+        {msg&&<div className={`msg-box ${msg.t==='err'?'msg-err':'msg-ok'}`}>{msg.m}</div>}
+        <div className="field"><label>Nytt lösenord</label><input type="password" value={pw} onChange={e=>setPw(e.target.value)} placeholder="Minst 6 tecken"/></div>
+        <div className="field"><label>Bekräfta lösenord</label><input type="password" value={pw2} onChange={e=>setPw2(e.target.value)} placeholder="Upprepa lösenord"/></div>
+        <button className="btn btn-primary btn-full" disabled={busy} onClick={changePassword}>{busy?'Sparar...':'Spara nytt lösenord'}</button>
+      </>}
+    </div>
+  </div>;
+}
+
+// ── AUTH SCREEN ──────────────────────────────────────────────────
 function AuthScreen(){
   const [mode,setMode]=useState('login');
-  const [email,setEmail]=useState('');
-  const [pw,setPw]=useState('');
-  const [name,setName]=useState('');
-  const [msg,setMsg]=useState(null);
-  const [busy,setBusy]=useState(false);
+  const [email,setEmail]=useState('');const [pw,setPw]=useState('');const [name,setName]=useState('');
+  const [msg,setMsg]=useState(null);const [busy,setBusy]=useState(false);
   async function submit(){
     if(!email||!pw){setMsg({t:'err',m:'Fyll i e-post och lösenord.'});return;}
     setBusy(true);setMsg(null);
     try{
       if(mode==='signup'){
-        const {error}=await sb.auth.signUp({email,password:pw,options:{data:{name}}});
+        const {error}=await sb.auth.signUp({email,password:pw,options:{data:{name},emailRedirectTo:window.location.origin+window.location.pathname}});
         if(error)setMsg({t:'err',m:error.message});
-        else setMsg({t:'ok',m:'✅ Konto skapat! Kolla din mejl och bekräfta adressen, logga sedan in.'});
+        else setMsg({t:'ok',m:'✅ Konto skapat! Kolla din mejl (och skräpposten) för bekräftelselänken. Bekräfta, logga sedan in.'});
       }else{
         const {error}=await sb.auth.signInWithPassword({email,password:pw});
-        if(error)setMsg({t:'err',m:error.message});
+        if(error)setMsg({t:'err',m:error.message==='Invalid login credentials'?'Fel e-post eller lösenord. Har du bekräftat mejladressen?':error.message});
       }
-    }catch(e){setMsg({t:'err',m:'Något gick fel: '+e.message});}
+    }catch(e){setMsg({t:'err',m:'Fel: '+e.message});}
     setBusy(false);
   }
-  return (
-    <div className="auth-wrap">
-      <div className="auth-logo">🏋️</div>
-      <div className="auth-title">FitTrack</div>
-      <div className="auth-sub">Din tränings- och matsplan</div>
-      <div className="auth-tabs">
-        <button className={`auth-tab${mode==='login'?' active':''}`} onClick={()=>{setMode('login');setMsg(null);}}>Logga in</button>
-        <button className={`auth-tab${mode==='signup'?' active':''}`} onClick={()=>{setMode('signup');setMsg(null);}}>Skapa konto</button>
-      </div>
-      {msg&&<div className={`auth-msg ${msg.t}`}>{msg.m}</div>}
-      {mode==='signup'&&<div className="field"><label>Namn</label><input value={name} onChange={e=>setName(e.target.value)} placeholder="Ditt namn"/></div>}
-      <div className="field"><label>E-post</label><input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="din@mejl.se" autoComplete="email"/></div>
-      <div className="field"><label>Lösenord</label><input type="password" value={pw} onChange={e=>setPw(e.target.value)} placeholder="Minst 6 tecken" autoComplete={mode==='signup'?'new-password':'current-password'}/></div>
-      <button className="btn btn-primary btn-full" disabled={busy} onClick={submit} style={{marginTop:8}}>{busy?'...':mode==='login'?'Logga in':'Skapa konto'}</button>
+  return <div className="auth-wrap">
+    <div className="auth-logo">🏋️</div>
+    <div className="auth-title">FitTrack</div>
+    <div className="auth-sub">Din personliga tränings- och matsplan</div>
+    <div className="auth-tabs">
+      <button className={`auth-tab${mode==='login'?' active':''}`} onClick={()=>{setMode('login');setMsg(null);}}>Logga in</button>
+      <button className={`auth-tab${mode==='signup'?' active':''}`} onClick={()=>{setMode('signup');setMsg(null);}}>Skapa konto</button>
     </div>
-  );
+    {msg&&<div className={`msg-box ${msg.t==='err'?'msg-err':'msg-ok'}`}>{msg.m}</div>}
+    {mode==='signup'&&<div className="field"><label>Namn</label><input value={name} onChange={e=>setName(e.target.value)} placeholder="Ditt namn"/></div>}
+    <div className="field"><label>E-post</label><input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="din@mejl.se" autoComplete="email"/></div>
+    <div className="field"><label>Lösenord</label><input type="password" value={pw} onChange={e=>setPw(e.target.value)} placeholder="Minst 6 tecken" autoComplete={mode==='signup'?'new-password':'current-password'}/></div>
+    <button className="btn btn-primary btn-full" disabled={busy} onClick={submit} style={{marginTop:8}}>{busy?'...':mode==='login'?'Logga in':'Skapa konto'}</button>
+    {mode==='login'&&<div style={{textAlign:'center',marginTop:12,fontSize:12,color:'var(--t2)'}}>Hamnade bekräftelsemejlet i skräpposten? Kolla där och bekräfta innan du loggar in.</div>}
+  </div>;
 }
 
-// ══ TODAY ═════════════════════════════════════════════════════════
-function TodayScreen({workouts,mealTotals,onGoTrain,onGoFood}){
-  const now=new Date(),plan=TRAINING_PLAN[now.getDay()],week=getCurrentWeek(workouts);
+// ── ONBOARDING ───────────────────────────────────────────────────
+const GOAL_OPTIONS=[{id:'Viktnedgång',icon:'🔥',label:'Viktnedgång'},{id:'Bulk / Muskeluppbyggnad',icon:'💪',label:'Bulk'},{id:'Löpning / Kondition',icon:'🏃',label:'Löpning/Kondition'},{id:'Bli starkare',icon:'🏋️',label:'Bli starkare'},{id:'Hålla igång med träning',icon:'⚡',label:'Hålla igång'},{id:'10 000 steg om dagen',icon:'🚶',label:'10 000 steg/dag'},{id:'Fotboll/Lagsport',icon:'⚽',label:'Fotboll'},{id:'Återhämtning',icon:'🌿',label:'Återhämtning'}];
+const AGE_OPTS=['Under 18','18–25','25–30','30–35','35–40','40–50','50+'];
+
+function OnboardingScreen({session,onDone}){
+  const [step,setStep]=useState(0);
+  const [ageRange,setAgeRange]=useState('');
+  const [weight,setWeight]=useState('');
+  const [height,setHeight]=useState('');
+  const [goals,setGoals]=useState([]);
+  const [busy,setBusy]=useState(false);
+  const name=session.user.user_metadata?.name||session.user.email.split('@')[0];
+  function toggleGoal(g){setGoals(prev=>prev.includes(g)?prev.filter(x=>x!==g):[...prev,g]);}
+  async function finish(){
+    setBusy(true);
+    await sb.from('user_profiles').upsert({user_id:session.user.id,email:session.user.email,display_name:name,age_range:ageRange,weight_kg:parseFloat(weight)||null,height_cm:parseFloat(height)||null,goals,schedule_type:goals[0]||'custom',onboarding_done:true},{onConflict:'user_id'});
+    setBusy(false);
+    onDone();
+  }
+  const steps=['Välkommen','Ålder & kropp','Mål'];
+  return <div className="onboarding-wrap">
+    <div className="ob-step">
+      <div className="step-dots">{steps.map((_,i)=><div key={i} className={`step-dot${i===step?' active':''}`}/>)}</div>
+      {step===0&&<>
+        <div className="ob-welcome">
+          <div className="ob-emoji">🏋️</div>
+          <div className="ob-title">Välkommen till din förändring!</div>
+          <div className="ob-sub">Hej {name}! Vi skapar ett träningsupplägg anpassat just för dig. Det tar bara en minut.</div>
+        </div>
+        <button className="btn btn-primary btn-full" style={{marginTop:'auto'}} onClick={()=>setStep(1)}>Kom igång →</button>
+      </>}
+      {step===1&&<>
+        <h2 style={{marginBottom:4}}>Om dig</h2>
+        <p style={{color:'var(--t2)',fontSize:13,marginBottom:20}}>Hjälper oss sätta rätt mål och kaloribudget.</p>
+        <div className="ob-section-title">Åldersgrupp</div>
+        <div className="age-options">{AGE_OPTS.map(a=><button key={a} className={`age-btn${ageRange===a?' sel':''}`} onClick={()=>setAgeRange(a)}>{a}</button>)}</div>
+        <div className="input-row cols2" style={{marginBottom:20}}>
+          <div className="field"><label>Vikt (kg)</label><input type="number" value={weight} onChange={e=>setWeight(e.target.value)} placeholder="89"/></div>
+          <div className="field"><label>Längd (cm)</label><input type="number" value={height} onChange={e=>setHeight(e.target.value)} placeholder="183"/></div>
+        </div>
+        <button className="btn btn-primary btn-full" style={{marginTop:'auto'}} onClick={()=>setStep(2)}>Nästa →</button>
+      </>}
+      {step===2&&<>
+        <h2 style={{marginBottom:4}}>Vad är ditt mål?</h2>
+        <p style={{color:'var(--t2)',fontSize:13,marginBottom:16}}>Välj ett eller flera — vi anpassar träningsschemat.</p>
+        <div className="goal-grid">{GOAL_OPTIONS.map(g=><button key={g.id} className={`goal-btn${goals.includes(g.id)?' sel':''}`} onClick={()=>toggleGoal(g.id)}><span className="goal-btn-icon">{g.icon}</span>{g.label}</button>)}</div>
+        <button className="btn btn-primary btn-full" disabled={goals.length===0||busy} onClick={finish}>{busy?'Skapar schema...':'Skapa mitt schema 🚀'}</button>
+        <button className="btn btn-ghost btn-full btn-sm" style={{marginTop:8}} onClick={finish}>Hoppa över</button>
+      </>}
+    </div>
+  </div>;
+}
+
+// ── OPTIMIZE POPUP ───────────────────────────────────────────────
+function OptimizePopup({onYes,onNo}){
+  return <div className="optimize-overlay">
+    <div className="optimize-card">
+      <div className="optimize-emoji">🚀</div>
+      <div className="optimize-title">Dags att optimera!</div>
+      <div className="optimize-text">Du har tränat i ungefär 2 månader nu. Vill du att vi justerar och optimerar din träningsvecka baserat på dina resultat?</div>
+      <button className="btn btn-primary btn-full" style={{marginBottom:8}} onClick={onYes}>Ja, optimera schemat!</button>
+      <button className="btn btn-ghost btn-full btn-sm" onClick={onNo}>Inte nu</button>
+    </div>
+  </div>;
+}
+
+// ── TODAY ────────────────────────────────────────────────────────
+function TodayScreen({workouts,mealTotals,onGoTrain,onGoFood,profile}){
+  const now=new Date(),plan=getPlan(profile),todayPlan=plan[now.getDay()];
+  const week=getWeek(workouts);
   const tgt=DAY_TARGETS[DAY_TYPE_MAP[now.getDay()]];
   const todayWo=workouts.filter(w=>w.date===todayStr());
-  const tc={gym:'var(--blue)',football:'var(--green)',rest:'var(--t2)'};
-  return (
-    <div className="screen">
-      <div className="today-header"><div className="today-greeting">God dag 👋</div><div className="today-day">{fmtDateDisplay(now)}</div><div className="week-badge">Vecka {week} · 89→84 kg</div></div>
-      <div className="pad" style={{paddingTop:12}}>
-        <div className="card">
-          <div className="workout-card-type" style={{color:tc[plan.type]}}>{plan.icon} {plan.label}</div>
-          <div className="workout-card-name">{plan.name}</div>
-          <ul className="workout-exercises">{plan.exs.map((e,i)=><li key={i}>{e}</li>)}</ul>
-          {plan.type!=='rest'?<button className="btn btn-primary btn-sm" onClick={onGoTrain}>{todayWo.length?'✅ Loggat — visa':'→ Logga passet'}</button>:<span className="workout-rest">Vila — återhämtning 💤</span>}
-        </div>
-        <div className="card">
-          <div className="card-title">Dagens mat</div>
-          <PBar label="🔥 Kalorier" val={mealTotals.kcal} max={tgt.kcal} unit=" kcal"/>
-          <PBar label="💪 Protein" val={mealTotals.protein} max={tgt.protein} unit="g"/>
-          <button className="btn btn-secondary btn-sm btn-full" onClick={onGoFood} style={{marginTop:4}}>→ Logga mat</button>
-        </div>
-        <div style={{display:'flex',gap:8,flexWrap:'wrap'}}><Chip type="blue">Vecka {week}</Chip><Chip type={plan.type==='rest'?'gray':'green'}>{plan.label}</Chip><Chip type="gray">Mål: {tgt.kcal} kcal · {tgt.protein}g P</Chip></div>
+  const tc={gym:'var(--blue)',football:'var(--green)',rest:'var(--t2)',cardio:'var(--amber)'};
+  return <div className="screen">
+    <div className="today-header">
+      <div className="today-greeting">God dag 👋</div>
+      <div className="today-day">{fmtDateLong(todayStr())}</div>
+      <div className="week-badge">Vecka {week} · Mål: {tgt.kcal} kcal</div>
+    </div>
+    <div className="pad" style={{paddingTop:12}}>
+      <div className="card">
+        <div className="workout-card-type" style={{color:tc[todayPlan.type]||'var(--t2)'}}>{todayPlan.icon} {todayPlan.label}</div>
+        <div className="workout-card-name">{todayPlan.name}</div>
+        <ul className="workout-exercises">{todayPlan.exs.map((e,i)=><li key={i}>{e}</li>)}</ul>
+        {todayPlan.type!=='rest'?<button className="btn btn-primary btn-sm" onClick={onGoTrain}>{todayWo.length?'✅ Loggat — visa':'→ Logga passet'}</button>:<span style={{color:'var(--t2)',fontSize:14}}>Vila — återhämtning 💤</span>}
+      </div>
+      <div className="card">
+        <div className="card-title">Dagens mat</div>
+        <PBar label="🔥 Kalorier" val={mealTotals.kcal} max={tgt.kcal} unit=" kcal"/>
+        <PBar label="💪 Protein" val={mealTotals.protein} max={tgt.protein} unit="g"/>
+        <button className="btn btn-secondary btn-sm btn-full" onClick={onGoFood} style={{marginTop:4}}>→ Logga mat</button>
+      </div>
+      <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+        <Chip type="blue">Vecka {week}</Chip>
+        <Chip type={todayPlan.type==='rest'?'gray':todayPlan.type==='cardio'?'amber':'green'}>{todayPlan.label}</Chip>
       </div>
     </div>
-  );
+  </div>;
 }
 
-// ══ TRAINING ══════════════════════════════════════════════════════
-function TrainingScreen({workouts,addWorkout,deleteWorkout}){
+// ── TRAINING ─────────────────────────────────────────────────────
+function TrainingScreen({workouts,addWorkout,deleteWorkout,customExercises}){
   const [open,setOpen]=useState(false);
-  const [form,setForm]=useState({date:todayStr(),week:String(getCurrentWeek(workouts)),type:'',dur:'',bw:'',rpe:7,groin:0,notes:''});
+  const [form,setForm]=useState({date:todayStr(),week:String(getWeek(workouts)),type:'',dur:'',bw:'',rpe:7,groin:0,notes:'',cadioActivity:'',cardioDist:'',cardioSpeed:''});
   const [curExs,setCurExs]=useState([]);
   const [exSel,setExSel]=useState(''),[exSets,setExSets]=useState(''),[exReps,setExReps]=useState(''),[exKg,setExKg]=useState('');
-  const [filter,setFilter]=useState('all'),[busy,setBusy]=useState(false);
+  const [filter,setFilter]=useState('all');const [busy,setBusy]=useState(false);
+  const isCardio=isCardioType(form.type);
+  const allExGroups=useMemo(()=>{const g={...DEFAULT_EXERCISES};if(customExercises.length){g['⭐ Egna övningar']=customExercises.map(e=>e.name);}return g;},[customExercises]);
   function addEx(){if(!exSel)return;setCurExs(p=>[...p,{name:exSel,sets:exSets,reps:exReps,kg:exKg}]);setExSel('');setExSets('');setExReps('');setExKg('');}
   async function save(){
     if(!form.date||!form.type){alert('Fyll i datum och typ.');return;}
     setBusy(true);
-    await addWorkout({date:form.date,week:parseInt(form.week)||null,type:form.type,duration:parseInt(form.dur)||null,bodyweight:parseFloat(form.bw)||null,rpe:form.rpe,groin:form.groin,exercises:curExs,notes:form.notes});
-    setForm({date:todayStr(),week:String(getCurrentWeek(workouts)),type:'',dur:'',bw:'',rpe:7,groin:0,notes:''});
+    const wo={date:form.date,week:parseInt(form.week)||null,type:form.type,duration:parseInt(form.dur)||null,bodyweight:parseFloat(form.bw)||null,rpe:form.rpe,groin:form.groin,notes:form.notes};
+    if(isCardio){wo.exercises=[{name:form.cardioActivity||form.type,duration:form.dur,distance:form.cardioDist,speed:form.cardioSpeed}];}
+    else{wo.exercises=curExs;}
+    await addWorkout(wo);
+    setForm({date:todayStr(),week:String(getWeek(workouts)),type:'',dur:'',bw:'',rpe:7,groin:0,notes:'',cardioActivity:'',cardioDist:'',cardioSpeed:''});
     setCurExs([]);setOpen(false);setBusy(false);
   }
   const filtered=filter==='all'?workouts:workouts.filter(w=>w.type&&w.type.includes(filter));
-  return (
-    <div className="screen"><div className="pad">
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}><h2>Träning</h2><button className="btn btn-primary btn-sm" onClick={()=>setOpen(o=>!o)}>{open?'✕ Stäng':'+ Logga pass'}</button></div>
-      {open&&<div className="card" style={{marginBottom:16}}>
-        <div className="card-title">Nytt pass</div>
-        <div className="input-row cols2" style={{marginBottom:8}}>
-          <div className="field"><label>Datum</label><input type="date" value={form.date} onChange={e=>setForm(f=>({...f,date:e.target.value}))}/></div>
-          <div className="field"><label>Vecka</label><input type="number" value={form.week} onChange={e=>setForm(f=>({...f,week:e.target.value}))}/></div>
+  return <div className="screen"><div className="pad">
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}><h2>Träning</h2><button className="btn btn-primary btn-sm" onClick={()=>setOpen(o=>!o)}>{open?'✕ Stäng':'+ Logga pass'}</button></div>
+    {open&&<div className="card" style={{marginBottom:16}}>
+      <div className="card-title">Nytt pass</div>
+      <div className="input-row cols2" style={{marginBottom:8}}>
+        <div className="field"><label>Datum</label><input type="date" value={form.date} onChange={e=>setForm(f=>({...f,date:e.target.value}))}/></div>
+        <div className="field"><label>Vecka</label><input type="number" value={form.week} onChange={e=>setForm(f=>({...f,week:e.target.value}))}/></div>
+      </div>
+      <div className="field"><label>Typ av pass</label>
+        <select value={form.type} onChange={e=>setForm(f=>({...f,type:e.target.value}))}>
+          <option value="">Välj...</option>
+          <optgroup label="🏋️ Styrka"><option>Gym — Underkropp</option><option>Gym — Överkropp</option><option>Gym — Helkropp</option></optgroup>
+          <optgroup label="⚽ Boll/Sport"><option>Fotboll</option><option>Cardio Step + Fotboll</option><option>Match</option><option>Domares match</option></optgroup>
+          <optgroup label="🏃 Cardio">{CARDIO_TYPES.map(t=><option key={t}>{t}</option>)}</optgroup>
+          <optgroup label="🔧 Övrigt"><option>Återhämtning</option><option>Annat</option></optgroup>
+        </select>
+      </div>
+      {isCardio?<>
+        <div className="cardio-grid">
+          <div className="cardio-stat"><label>Tid (min)</label><input type="number" value={form.dur} onChange={e=>setForm(f=>({...f,dur:e.target.value}))} placeholder="30"/></div>
+          <div className="cardio-stat"><label>Distans (km)</label><input type="number" step="0.1" value={form.cardioDist} onChange={e=>setForm(f=>({...f,cardioDist:e.target.value}))} placeholder="5.0"/></div>
+          <div className="cardio-stat"><label>Fart (km/h)</label><input type="number" step="0.1" value={form.cardioSpeed} onChange={e=>setForm(f=>({...f,cardioSpeed:e.target.value}))} placeholder="8.0"/></div>
         </div>
-        <div className="field"><label>Typ av pass</label><select value={form.type} onChange={e=>setForm(f=>({...f,type:e.target.value}))}><option value="">Välj...</option><option>Gym — Underkropp</option><option>Gym — Överkropp</option><option>Fotboll</option><option>Cardio Step + Fotboll</option><option>Match</option><option>Domares match</option><option>Cardio / Löpning</option><option>Återhämtning</option></select></div>
+        {form.dur&&form.cardioDist&&<div style={{fontSize:12,color:'var(--green)',textAlign:'center',marginBottom:8}}>Snittfart: {(parseFloat(form.cardioDist)/(parseFloat(form.dur)/60)).toFixed(1)} km/h · {(parseFloat(form.dur)/parseFloat(form.cardioDist)).toFixed(1)} min/km</div>}
+      </>:<>
         <div className="input-row cols2" style={{marginBottom:8}}>
           <div className="field"><label>Tid (min)</label><input type="number" value={form.dur} onChange={e=>setForm(f=>({...f,dur:e.target.value}))} placeholder="60"/></div>
           <div className="field"><label>Kroppsvikt (kg)</label><input type="number" step="0.1" value={form.bw} onChange={e=>setForm(f=>({...f,bw:e.target.value}))} placeholder="89.0"/></div>
         </div>
-        <div className="field"><label>RPE: <span style={{color:'var(--green)'}}>{form.rpe}</span></label><div className="slider-row"><span style={{fontSize:11,color:'var(--t3)'}}>Lätt</span><input type="range" min="1" max="10" value={form.rpe} onChange={e=>setForm(f=>({...f,rpe:+e.target.value}))}/><span style={{fontSize:11,color:'var(--t3)'}}>Max</span><span className="slider-val">{form.rpe}</span></div></div>
-        <div className="field"><label>Ljumske: <span style={{color:form.groin>=4?'var(--red)':form.groin>=2?'var(--amber)':'var(--green)'}}>{form.groin}/10</span></label><div className="slider-row"><input type="range" min="0" max="10" value={form.groin} onChange={e=>setForm(f=>({...f,groin:+e.target.value}))}/><span className="slider-val" style={{color:form.groin>=4?'var(--red)':form.groin>=2?'var(--amber)':'var(--green)'}}>{form.groin}</span></div></div>
-        <div className="field"><label>Övningar</label>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 40px 40px 55px auto',gap:5,marginBottom:6}}>
-            <select value={exSel} onChange={e=>setExSel(e.target.value)} style={{fontSize:12,padding:'7px 8px'}}><option value="">Övning...</option>{Object.entries(EXERCISE_GROUPS).map(([g,exs])=><optgroup key={g} label={g}>{exs.map(e=><option key={e}>{e}</option>)}</optgroup>)}</select>
-            <input type="number" value={exSets} onChange={e=>setExSets(e.target.value)} placeholder="Set" style={{fontSize:12,padding:'7px 4px',textAlign:'center'}}/>
-            <input type="number" value={exReps} onChange={e=>setExReps(e.target.value)} placeholder="Rep" style={{fontSize:12,padding:'7px 4px',textAlign:'center'}}/>
-            <input type="number" step="0.5" value={exKg} onChange={e=>setExKg(e.target.value)} placeholder="kg" style={{fontSize:12,padding:'7px 4px',textAlign:'center'}}/>
-            <button className="btn btn-secondary btn-sm" onClick={addEx} style={{padding:'7px 10px'}}>+</button>
-          </div>
-          <div className="ex-chips">{curExs.length===0&&<span style={{fontSize:12,color:'var(--t3)'}}>Inga övningar ännu</span>}{curExs.map((e,i)=><div key={i} className="ex-chip">{e.name}{e.sets&&e.reps?` ${e.sets}×${e.reps}`:''}{e.kg?` @ ${e.kg}kg`:''}<button onClick={()=>setCurExs(p=>p.filter((_,j)=>j!==i))}>×</button></div>)}</div>
+      </>}
+      <div className="field">
+        <label>RPE — Ansträngning</label>
+        <Slider min={1} max={10} value={form.rpe} onChange={v=>setForm(f=>({...f,rpe:v}))} leftLabel="Lätt (1)" rightLabel="Max (10)"/>
+      </div>
+      <div className="field">
+        <label>Ljumske — Smärta/obehag</label>
+        <Slider min={0} max={10} value={form.groin} onChange={v=>setForm(f=>({...f,groin:v}))} leftLabel="Ingen (0)" rightLabel="Allvarlig (10)"/>
+      </div>
+      {!isCardio&&<div className="field"><label>Övningar</label>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 40px 40px 55px auto',gap:5,marginBottom:6}}>
+          <select value={exSel} onChange={e=>setExSel(e.target.value)} style={{fontSize:12,padding:'7px 8px'}}><option value="">Övning...</option>{Object.entries(allExGroups).map(([g,exs])=><optgroup key={g} label={g}>{exs.map(e=><option key={e}>{e}</option>)}</optgroup>)}</select>
+          <input type="number" value={exSets} onChange={e=>setExSets(e.target.value)} placeholder="Set" style={{fontSize:12,padding:'7px 4px',textAlign:'center'}}/>
+          <input type="number" value={exReps} onChange={e=>setExReps(e.target.value)} placeholder="Rep" style={{fontSize:12,padding:'7px 4px',textAlign:'center'}}/>
+          <input type="number" step="0.5" value={exKg} onChange={e=>setExKg(e.target.value)} placeholder="kg" style={{fontSize:12,padding:'7px 4px',textAlign:'center'}}/>
+          <button className="btn btn-secondary btn-sm" onClick={addEx} style={{padding:'7px 10px'}}>+</button>
         </div>
-        <div className="field"><label>Anteckningar</label><textarea value={form.notes} onChange={e=>setForm(f=>({...f,notes:e.target.value}))} placeholder="Hur kändes passet..."/></div>
-        <div className="btn-row"><button className="btn btn-primary btn-full" disabled={busy} onClick={save}>{busy?'Sparar...':'Spara pass'}</button></div>
+        <div className="ex-chips">{curExs.length===0&&<span style={{fontSize:12,color:'var(--t3)'}}>Inga övningar än</span>}{curExs.map((e,i)=><div key={i} className="ex-chip">{e.name}{e.sets&&e.reps?` ${e.sets}×${e.reps}`:''}{e.kg?` @ ${e.kg}kg`:''}<button onClick={()=>setCurExs(p=>p.filter((_,j)=>j!==i))}>×</button></div>)}</div>
       </div>}
-      <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:12}}>{['all','Gym','Fotboll','Match','Cardio'].map(f=><button key={f} className={`qa-cat${filter===f?' active':''}`} onClick={()=>setFilter(f)}>{f==='all'?'Alla':f}</button>)}</div>
-      {filtered.length===0&&<div className="empty">Inga pass loggade ännu.<br/>Tryck "+ Logga pass" för att börja.</div>}
-      {filtered.map(w=>{
-        const d=new Date(w.date),ds=d.toLocaleDateString('sv-SE',{weekday:'short',month:'short',day:'numeric'});
-        const gc=parseInt(w.groin)>=4?'red':parseInt(w.groin)>=2?'amber':'green';
-        return <div key={w.id} className="log-entry">
-          <div className="log-entry-head"><div><div className="log-entry-title">{w.type}</div><div style={{fontSize:11,color:'var(--t2)',marginTop:2}}>{w.week?`Vecka ${w.week} · `:''}{ds}</div></div><button className="del-btn" onClick={()=>{if(confirm('Ta bort?'))deleteWorkout(w.id);}}>×</button></div>
-          <div className="log-entry-meta">{w.duration&&<Chip type="gray">{w.duration} min</Chip>}<Chip type="gray">RPE {w.rpe}</Chip><Chip type={gc}>Ljumske {w.groin}/10</Chip>{w.bodyweight&&<Chip type="gray">⚖ {w.bodyweight} kg</Chip>}</div>
-          {w.exercises&&w.exercises.length>0&&<div className="log-entry-exs">{w.exercises.map((e,i)=><div key={i} className="log-entry-ex"><span style={{color:'var(--t1)',fontWeight:500}}>{e.name}</span><span>{[e.sets&&e.reps&&`${e.sets}×${e.reps}`,e.kg&&`${e.kg}kg`].filter(Boolean).join(' · ')}</span></div>)}</div>}
-          {w.notes&&<div style={{fontSize:12,color:'var(--t2)',marginTop:6,paddingTop:6,borderTop:'1px solid var(--border)'}}>{w.notes}</div>}
-        </div>;
-      })}
-    </div></div>
-  );
+      <div className="field"><label>Anteckningar</label><textarea value={form.notes} onChange={e=>setForm(f=>({...f,notes:e.target.value}))} placeholder="Hur kändes passet..."/></div>
+      <div className="btn-row"><button className="btn btn-primary btn-full" disabled={busy} onClick={save}>{busy?'Sparar...':'Spara pass'}</button></div>
+    </div>}
+    <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:12}}>{['all','Gym','Fotboll','Löpning','Cardio','Match'].map(f=><button key={f} className={`qa-cat${filter===f?' active':''}`} onClick={()=>setFilter(f)}>{f==='all'?'Alla':f}</button>)}</div>
+    {filtered.length===0&&<div className="empty">Inga pass loggade.<br/>Tryck "+ Logga pass" för att börja.</div>}
+    {filtered.map(w=>{
+      const ds=fmtDate(w.date);
+      const gc=parseInt(w.groin)>=4?'red':parseInt(w.groin)>=2?'amber':'green';
+      const cardio=w.exercises&&w.exercises.length===1&&w.exercises[0].distance;
+      return <div key={w.id} className="log-entry">
+        <div className="log-entry-head"><div><div className="log-entry-title">{w.type}</div><div style={{fontSize:11,color:'var(--t2)',marginTop:2}}>{w.week?`Vecka ${w.week} · `:''}{ds}</div></div><button className="del-btn" onClick={()=>{if(confirm('Ta bort?'))deleteWorkout(w.id);}}>×</button></div>
+        <div className="log-entry-meta">{w.duration&&<Chip type="gray">{w.duration} min</Chip>}{cardio&&w.exercises[0].distance&&<Chip type="amber">📍 {w.exercises[0].distance} km</Chip>}{cardio&&w.exercises[0].speed&&<Chip type="amber">⚡ {w.exercises[0].speed} km/h</Chip>}<Chip type="gray">RPE {w.rpe}</Chip><Chip type={gc}>Ljumske {w.groin}/10</Chip>{w.bodyweight&&<Chip type="gray">⚖ {w.bodyweight} kg</Chip>}</div>
+        {!cardio&&w.exercises&&w.exercises.length>0&&<div className="log-entry-exs">{w.exercises.map((e,i)=><div key={i} className="log-entry-ex"><span style={{color:'var(--t1)',fontWeight:500}}>{e.name}</span><span>{[e.sets&&e.reps&&`${e.sets}×${e.reps}`,e.kg&&`${e.kg}kg`].filter(Boolean).join(' · ')}</span></div>)}</div>}
+        {w.notes&&<div style={{fontSize:12,color:'var(--t2)',marginTop:6,paddingTop:6,borderTop:'1px solid var(--border)'}}>{w.notes}</div>}
+      </div>;
+    })}
+  </div></div>;
 }
 
-// ══ FOOD ══════════════════════════════════════════════════════════
+// ── FOOD ─────────────────────────────────────────────────────────
 const INIT_MLB={pI:-1,pG:200,cI:-1,cG:100,vI:-1,vG:150,fI:0};
 function FoodScreen({meals,mealsDone,addMeal,deleteMeal,setDayDone}){
   const [dayType,setDayType]=useState(DAY_TYPE_MAP[new Date().getDay()]);
+  const [viewDate,setViewDate]=useState(todayStr());
   const [qaCat,setQaCat]=useState('Frukost');
   const [mlb,setMlb]=useState({...INIT_MLB});
   const [ca,setCa]=useState({n:'',k:'',p:''});
-  const date=todayStr(),tgt=DAY_TARGETS[dayType];
-  const entries=meals[date]||[];
+  const tgt=DAY_TARGETS[dayType];
+  const entries=meals[viewDate]||[];
   const totals=entries.reduce((t,e)=>({kcal:t.kcal+(e.kcal||0),protein:t.protein+(e.protein||0)}),{kcal:0,protein:0});
-  const isDone=!!mealsDone[date];
+  const isDone=!!mealsDone[viewDate];
+  const isToday=viewDate===todayStr();
+  const surplus=totals.kcal>tgt.kcal+200;
+  const surplusAmt=totals.kcal-tgt.kcal;
   const pName=mlb.pI>=0&&PROTEINS[mlb.pI]?PROTEINS[mlb.pI].n:'';
   const cRec=pName&&PAIRINGS[pName]?PAIRINGS[pName]:'';
   const cRecI=cRec?CARBS.findIndex(x=>x.n===cRec):-1;
@@ -379,88 +595,158 @@ function FoodScreen({meals,mealsDone,addMeal,deleteMeal,setDayDone}){
     if(effCI>=0&&CARBS[effCI]&&CARBS[effCI].k>0)parts.push(`${mlb.cG}g ${CARBS[effCI].n.replace(' (torrt)','').replace(' (rå)','')}`);
     if(mlb.vI>=0&&VEGS[mlb.vI])parts.push(`${mlb.vG}g ${VEGS[mlb.vI].n}`);
     if(mlb.fI>0)parts.push(FATS[mlb.fI].n);
-    addMeal(date,parts.join(' + ')||'Måltid',mbTot.k,mbTot.p);setMlb({...INIT_MLB});
+    addMeal(viewDate,parts.join(' + ')||'Måltid',mbTot.k,mbTot.p);setMlb({...INIT_MLB});
   }
-  function addCustom(){if(!ca.n||!ca.k){alert('Fyll i namn och kcal.');return;}addMeal(date,ca.n,+ca.k,+ca.p||0);setCa({n:'',k:'',p:''});}
+  function addCustom(){if(!ca.n||!ca.k){alert('Fyll i namn och kcal.');return;}addMeal(viewDate,ca.n,+ca.k,+ca.p||0);setCa({n:'',k:'',p:''});}
   const rem={k:tgt.kcal-totals.kcal,p:tgt.protein-totals.protein};
   const sugs=[];
-  if(rem.k>0&&rem.k<=150&&rem.p<=10)sugs.push({icon:'🍌',text:`${rem.k} kcal kvar — en banan (89 kcal) eller ett äpple (52 kcal)`,n:'1 banan',k:89,p:1});
-  if(rem.p>0&&rem.p<=30&&rem.k<=250)sugs.push({icon:'💪',text:`${rem.p}g protein kvar — proteinshake (+25g, 120 kcal)`,n:'Proteinshake + vatten',k:120,p:25});
-  if(rem.p>0&&rem.p<=25&&rem.k<=200)sugs.push({icon:'🥛',text:`200g keso ger +22g protein (${rem.p}g saknas)`,n:'200g keso',k:160,p:22});
-  return (
-    <div className="screen"><div className="pad">
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}><h2>Mat</h2><select value={dayType} onChange={e=>setDayType(e.target.value)} style={{width:'auto',fontSize:12,padding:'6px 10px'}}><option value="tuesday">Tisdag — 2800</option><option value="gym">Gym — 2400</option><option value="football">Fotboll — 2600</option><option value="rest">Vila — 2200</option></select></div>
-      <div className="card"><div className="card-title">Idag</div><PBar label="🔥 Kalorier" val={totals.kcal} max={tgt.kcal} unit=" kcal"/><PBar label="💪 Protein" val={totals.protein} max={tgt.protein} unit="g"/></div>
-      {sugs.length>0&&!isDone&&<div className="sug-box"><div style={{fontSize:11,fontWeight:600,color:'var(--amber)',textTransform:'uppercase',marginBottom:8}}>💡 För att nå målet</div>{sugs.slice(0,2).map((s,i)=><div key={i} className="sug-item"><span style={{fontSize:16}}>{s.icon}</span><span className="sug-text">{s.text}</span><button className="sug-add" onClick={()=>addMeal(date,s.n,s.k,s.p)}>+ Lägg till</button></div>)}</div>}
-      {isDone?<DoneCard totals={totals} tgt={tgt} entries={entries} onUndo={()=>setDayDone(date,false)}/>:<>
+  if(!surplus&&rem.k>0&&rem.k<=150&&rem.p<=10)sugs.push({icon:'🍌',text:`${rem.k} kcal kvar — en banan (89 kcal) passar`,n:'1 banan',k:89,p:1});
+  if(!surplus&&rem.p>0&&rem.p<=30&&rem.k<=250)sugs.push({icon:'💪',text:`${rem.p}g protein kvar — proteinshake (+25g)`,n:'Proteinshake + vatten',k:120,p:25});
+  return <div className="screen"><div className="pad">
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}><h2>Mat</h2><select value={dayType} onChange={e=>setDayType(e.target.value)} style={{width:'auto',fontSize:12,padding:'6px 10px'}}><option value="tuesday">Tisdag — 2800</option><option value="gym">Gym — 2400</option><option value="football">Fotboll — 2600</option><option value="rest">Vila — 2200</option></select></div>
+    <div className="date-nav">
+      <button className="date-nav-btn" onClick={()=>{const d=new Date(viewDate+'T12:00:00');d.setDate(d.getDate()-1);setViewDate(d.toISOString().split('T')[0]);}}>‹</button>
+      <input type="date" value={viewDate} onChange={e=>setViewDate(e.target.value)}/>
+      <button className="date-nav-btn" onClick={()=>{const d=new Date(viewDate+'T12:00:00');d.setDate(d.getDate()+1);const t=todayStr();setViewDate(d.toISOString().split('T')[0]>t?t:d.toISOString().split('T')[0]);}}>›</button>
+    </div>
+    {!isToday&&<div className="msg-box msg-info" style={{marginBottom:12}}>📅 Visar historik: {fmtDate(viewDate)}</div>}
+    <div className="card">
+      <div className="card-title">Dagstotal</div>
+      <PBar label="🔥 Kalorier" val={totals.kcal} max={tgt.kcal} unit=" kcal"/>
+      <PBar label="💪 Protein" val={totals.protein} max={tgt.protein} unit="g"/>
+    </div>
+    {surplus&&<div className="surplus-box"><div className="surplus-title">⚠️ Kaloriöverskott — +{surplusAmt} kcal</div><div className="surplus-text">Du ligger {surplusAmt} kcal över målet för dagen ({tgt.kcal} kcal). Dagens mål är {dayType==='rest'?'att hålla ett underskott för viktnedgång':dayType==='gym'?'ett lätt underskott på en gymdag':'underhållskalorier'}. Justera middagen eller skippa kvällssnacket.</div></div>}
+    {sugs.length>0&&!isDone&&<div className="sug-box"><div style={{fontSize:11,fontWeight:600,color:'var(--amber)',textTransform:'uppercase',marginBottom:8}}>💡 Nå målet</div>{sugs.map((s,i)=><div key={i} className="sug-item"><span style={{fontSize:16}}>{s.icon}</span><span className="sug-text">{s.text}</span><button className="sug-add" onClick={()=>addMeal(viewDate,s.n,s.k,s.p)}>+ Lägg till</button></div>)}</div>}
+    {isDone?<DoneCard totals={totals} tgt={tgt} entries={entries} onUndo={()=>setDayDone(viewDate,false)}/>:<>
+      {isToday&&<>
         <div className="builder-card">
-          <div className="builder-title">🍽️ Bygg en måltid</div>
+          <div style={{fontSize:14,fontWeight:600,marginBottom:12}}>🍽️ Bygg en måltid</div>
           <div className="field"><label>Proteinkälla (rå vikt)</label><select value={mlb.pI} onChange={e=>setMlb(m=>({...m,pI:+e.target.value,cI:-1}))}><option value="-1">Välj protein...</option>{PROTEINS.map((x,i)=><option key={i} value={i}>{x.n} — {x.k} kcal/100g</option>)}</select>{mlb.pI>=0&&<div className="gram-adj"><span>Gram (rå):</span><input className="gram-in" type="number" value={mlb.pG} onChange={e=>setMlb(m=>({...m,pG:+e.target.value||200}))}/></div>}</div>
           {pName&&cRec&&<div className="rec-note">💡 Med {mlb.pG}g {pName.toLowerCase()} rekommenderas {mlb.cG}g {cRec.replace(' (torrt)','').replace(' (rå)','')}.</div>}
           <div className="field"><label>Kolhydrat (okokt/torrt)</label><select value={mlb.cI>=0?mlb.cI:cRecI} onChange={e=>setMlb(m=>({...m,cI:+e.target.value}))}><option value="-1">Välj kolhydrat...</option>{CARBS.map((x,i)=><option key={i} value={i}>{x.n} — {x.k} kcal/100g</option>)}</select>{(mlb.cI>=0||cRecI>=0)&&<div className="gram-adj"><span>Gram:</span><input className="gram-in" type="number" value={mlb.cG} onChange={e=>setMlb(m=>({...m,cG:+e.target.value||0}))}/></div>}</div>
           <div className="field"><label>Grönsaker</label><select value={mlb.vI} onChange={e=>setMlb(m=>({...m,vI:+e.target.value}))}><option value="-1">Ingen / välj...</option>{VEGS.map((x,i)=><option key={i} value={i}>{x.n}</option>)}</select>{mlb.vI>=0&&<div className="gram-adj"><span>Gram:</span><input className="gram-in" type="number" value={mlb.vG} onChange={e=>setMlb(m=>({...m,vG:+e.target.value||0}))}/></div>}</div>
           <div className="field"><label>Extra fett</label><select value={mlb.fI} onChange={e=>setMlb(m=>({...m,fI:+e.target.value}))}>{FATS.map((x,i)=><option key={i} value={i}>{x.n}{x.k?` — ${x.k} kcal`:''}</option>)}</select></div>
-          <div className="macro-row">{mbTot.k>0?<><span className="mc mc-k">🔥 {mbTot.k} kcal</span><span className="mc mc-p">💪 {mbTot.p}g P</span></>:<span style={{fontSize:12,color:'var(--t3)'}}>Välj ovan för att se macros</span>}</div>
+          <div className="macro-row">{mbTot.k>0?<><span className="mc mc-k">🔥 {mbTot.k} kcal</span><span className="mc mc-p">💪 {mbTot.p}g P</span></>:<span style={{fontSize:12,color:'var(--t3)'}}>Välj ovan</span>}</div>
           <button className="btn btn-primary btn-full" style={{marginTop:10}} disabled={!mbTot.k&&!mbTot.p} onClick={mlbAdd}>+ Lägg till måltid</button>
         </div>
         <div className="card">
           <div className="card-title">Snabblägg till</div>
           <div className="qa-cats">{Object.keys(QUICK_ITEMS).map(c=><button key={c} className={`qa-cat${qaCat===c?' active':''}`} onClick={()=>setQaCat(c)}>{c}</button>)}</div>
-          {QUICK_ITEMS[qaCat].map((f,i)=><div key={i} className="qa-item"><div><div className="qa-item-name">{f.n}</div><div className="qa-item-macros">🔥 {f.k} kcal · 💪 {f.p}g P</div></div><button className="qa-item-add" onClick={()=>addMeal(date,f.n,f.k,f.p)}>+ Lägg till</button></div>)}
+          {QUICK_ITEMS[qaCat].map((f,i)=><div key={i} className="qa-item"><div><div className="qa-item-name">{f.n}</div><div className="qa-item-macros">🔥 {f.k} kcal · 💪 {f.p}g P</div></div><button className="qa-item-add" onClick={()=>addMeal(viewDate,f.n,f.k,f.p)}>+ Lägg till</button></div>)}
           <div className="custom-row"><input type="text" value={ca.n} onChange={e=>setCa(c=>({...c,n:e.target.value}))} placeholder="Annan matvara..."/><input type="number" value={ca.k} onChange={e=>setCa(c=>({...c,k:e.target.value}))} placeholder="kcal"/><input type="number" value={ca.p} onChange={e=>setCa(c=>({...c,p:e.target.value}))} placeholder="prot"/><button className="btn btn-secondary btn-sm" onClick={addCustom}>+</button></div>
         </div>
-        <div className="card-title" style={{marginBottom:8}}>Loggat idag</div>
-        {entries.length===0&&<div className="empty">Ingen mat loggad än.</div>}
-        {entries.map(e=><div key={e.id} className="log-entry"><div className="log-entry-head"><div><div className="log-entry-title" style={{fontSize:13}}>{e.name}</div><div style={{display:'flex',gap:8,marginTop:3}}><span style={{fontSize:12,color:'var(--t2)'}}>🔥 {e.kcal} kcal</span><span style={{fontSize:12,color:'var(--t2)'}}>💪 {e.protein}g P</span></div></div><button className="del-btn" onClick={()=>deleteMeal(date,e.id)}>×</button></div></div>)}
-        {entries.length>0&&<button className="btn btn-primary btn-full" style={{marginTop:4}} onClick={()=>setDayDone(date,true)}>✅ Slutför dagen</button>}
       </>}
-    </div></div>
-  );
+      <div className="card-title" style={{marginBottom:8}}>Loggat {isToday?'idag':fmtDate(viewDate)}</div>
+      {entries.length===0&&<div className="empty">Ingen mat loggad {isToday?'idag':'detta datum'}.</div>}
+      {entries.map(e=><div key={e.id} className="log-entry"><div className="log-entry-head"><div><div style={{fontSize:13,fontWeight:500}}>{e.name}</div><div style={{display:'flex',gap:8,marginTop:3}}><span style={{fontSize:12,color:'var(--t2)'}}>🔥 {e.kcal} kcal</span><span style={{fontSize:12,color:'var(--t2)'}}>💪 {e.protein}g P</span></div></div>{isToday&&<button className="del-btn" onClick={()=>deleteMeal(viewDate,e.id)}>×</button>}</div></div>)}
+      {isToday&&entries.length>0&&<button className="btn btn-primary btn-full" style={{marginTop:4}} onClick={()=>setDayDone(viewDate,true)}>✅ Slutför dagen</button>}
+    </>}
+  </div></div>;
 }
 function DoneCard({totals,tgt,entries,onUndo}){
   const kp=Math.round(totals.kcal/tgt.kcal*100),pp=Math.round(totals.protein/tgt.protein*100);
   const ok=s=>s>=95?{c:'var(--green)',t:'✅ Nått'}:s>=80?{c:'var(--amber)',t:'Nära'}:{c:'var(--red)',t:'Under'};
-  const note=kp>=95&&pp>=95?'Perfekt dag! Du nådde båda målen. 💪':kp>=80&&pp>=80?'Bra dag — nära båda målen.':'På rätt väg — justera lite imorgon.';
-  return <div className="done-card"><div className="done-title">🎉 Dagen slutförd</div><div className="done-grid"><div className="done-stat"><div className="done-stat-lbl">Kalorier</div><div className="done-stat-val">{totals.kcal}</div><div className="done-stat-sub" style={{color:ok(kp).c}}>{ok(kp).t} (mål {tgt.kcal})</div></div><div className="done-stat"><div className="done-stat-lbl">Protein</div><div className="done-stat-val">{totals.protein}g</div><div className="done-stat-sub" style={{color:ok(pp).c}}>{ok(pp).t} (mål {tgt.protein}g)</div></div><div className="done-stat"><div className="done-stat-lbl">Måltider</div><div className="done-stat-val">{entries.length}</div></div><div className="done-stat"><div className="done-stat-lbl">P% energi</div><div className="done-stat-val">{totals.kcal?Math.round(totals.protein*4/totals.kcal*100):0}%</div></div></div><div style={{fontSize:13,color:'var(--green)',marginBottom:12}}>{note}</div><button className="btn btn-ghost btn-sm" onClick={onUndo}>↩ Ångra</button></div>;
+  const note=kp>=95&&pp>=95?'Perfekt dag! 💪':kp>=80&&pp>=80?'Bra dag — nära båda målen.':'På rätt väg — justera imorgon.';
+  return <div className="done-card"><div className="done-title">🎉 Dagen slutförd</div><div className="done-grid"><div className="done-stat"><div className="done-stat-lbl">Kalorier</div><div className="done-stat-val">{totals.kcal}</div><div className="done-stat-sub" style={{color:ok(kp).c}}>{ok(kp).t} ({tgt.kcal})</div></div><div className="done-stat"><div className="done-stat-lbl">Protein</div><div className="done-stat-val">{totals.protein}g</div><div className="done-stat-sub" style={{color:ok(pp).c}}>{ok(pp).t} ({tgt.protein}g)</div></div><div className="done-stat"><div className="done-stat-lbl">Måltider</div><div className="done-stat-val">{entries.length}</div></div><div className="done-stat"><div className="done-stat-lbl">P% energi</div><div className="done-stat-val">{totals.kcal?Math.round(totals.protein*4/totals.kcal*100):0}%</div></div></div><div style={{fontSize:13,color:'var(--green)',marginBottom:12}}>{note}</div><button className="btn btn-ghost btn-sm" onClick={onUndo}>↩ Ångra</button></div>;
 }
 
-// ══ PROGRESS ══════════════════════════════════════════════════════
+// ── PROGRESS ─────────────────────────────────────────────────────
 function ProgressScreen({workouts}){
   const [rm,setRm]=useState(false);
-  const week=getCurrentWeek(workouts);
+  const week=getWeek(workouts);
   const bwStep=getStep(BW_TARGETS,week);
   const bwWo=workouts.filter(w=>w.bodyweight);
   const latestBW=bwWo.length?parseFloat(bwWo[0].bodyweight):null;
   const bwDiff=latestBW!=null?latestBW-bwStep.bw:null;
-  return (
-    <div className="screen"><div className="pad">
-      <div style={{marginBottom:16}}><h2>Progress</h2><div style={{display:'flex',gap:8,marginTop:6}}><Chip type="blue">Vecka {week}</Chip><Chip type="gray">Mål: 84–85 kg</Chip></div></div>
-      <div className="prog-card"><div className="prog-card-head"><span className="prog-card-name">⚖️ Kroppsvikt</span></div><div className="prog-two"><div><div className="prog-col-lbl">Veckans mål</div><div className="prog-col-val">{bwStep.bw} kg</div><div className="prog-col-sub">v{bwStep.w[0]}–{bwStep.w[1]}</div></div><div><div className="prog-col-lbl">Senast loggat</div><div className="prog-col-val">{latestBW!=null?`${latestBW} kg`:'—'}</div></div></div><div className="prog-status"><div className="prog-dot" style={{background:bwDiff==null?'var(--t3)':bwDiff<=0.5?'var(--green)':'var(--amber)'}}/><span style={{fontSize:12,fontWeight:500}}>{bwDiff==null?'Ej loggad':bwDiff<=-0.5?`${Math.abs(bwDiff).toFixed(1)} kg under mål — bra jobbat`:bwDiff<=0.5?'På målet ✓':`${bwDiff.toFixed(1)} kg över veckamålet`}</span></div></div>
-      {Object.entries(PROGRESSIONS).map(([name,prog])=>{
-        const step=getStep(prog.steps,week);let tgtTxt,logTxt,dot,txt;
-        if(prog.type==='kg'){tgtTxt=`${step.kg} kg · ${step.sets}×${step.reps}`;const b=getBestKg(workouts,name,week);if(!b){logTxt='—';dot='var(--t3)';txt='Ej loggat denna vecka';}else{logTxt=`${b.kg} kg · ${b.sets}×${b.reps}`;const d=b.kg-step.kg;if(d>0){dot='var(--green)';txt=`+${d} kg över schemat — du ligger före 🎯`;}else if(d===0){dot='var(--green)';txt='Exakt på schemat ✓';}else{dot='var(--amber)';txt=`${Math.abs(d)} kg under schemat`;}}}
-        else{tgtTxt=`${step.sets}×${step.rt} reps · ${step.note}`;const b=getBestReps(workouts,name,week);if(!b){logTxt='—';dot='var(--t3)';txt='Ej loggat';}else{logTxt=`${b.sets}×${b.reps}${b.kg?` +${b.kg}kg`:''}`;const d=b.reps-step.rt;if(d>0){dot='var(--green)';txt=`+${d} reps över 🎯`;}else if(d===0){dot='var(--green)';txt='På schemat ✓';}else{dot='var(--amber)';txt=`${Math.abs(d)} reps under`;}}}
-        return <div key={name} className="prog-card"><div className="prog-card-head"><span className="prog-card-name">{prog.icon} {name}</span></div><div className="prog-two"><div><div className="prog-col-lbl">Veckans mål</div><div className="prog-col-val" style={{fontSize:13}}>{tgtTxt}</div></div><div><div className="prog-col-lbl">Bäst v.{week}</div><div className="prog-col-val" style={{fontSize:13,color:dot!=='var(--t3)'?dot:'var(--t2)'}}>{logTxt}</div></div></div><div className="prog-status"><div className="prog-dot" style={{background:dot}}/><span style={{fontSize:12,fontWeight:500}}>{txt}</span></div></div>;
-      })}
-      <div className="roadmap-toggle" onClick={()=>setRm(o=>!o)}><span style={{fontSize:13,fontWeight:600}}>Hela planen — v22–32</span><span className={`coll-arr${rm?' open':''}`}>▼</span></div>
-      {rm&&<div style={{background:'var(--s2)',border:'1px solid var(--border)',borderRadius:12,overflow:'hidden',marginBottom:8}}><table className="rm-table"><thead><tr><th>Veckor</th><th>Knäböj</th><th>RDL</th><th>Bänk</th><th>Chins</th></tr></thead><tbody>{PROGRESSIONS['Knäböj (Back Squat)'].steps.map((s,i)=>{const rs=PROGRESSIONS['Rumänsk marklyft (RDL)'].steps[i],bs=PROGRESSIONS['Bänkpress'].steps[i],cs=PROGRESSIONS['Chins (Pull-ups)'].steps[i];const cur=week>=s.w[0]&&week<=s.w[1];const sqB=getBestKg(workouts,'Knäböj (Back Squat)',week);return <tr key={i} className={cur?'cur':''}><td><strong>{s.w[0]}–{s.w[1]}</strong>{cur&&<div style={{fontSize:9,color:'var(--green)',fontWeight:600}}>◀ Nu</div>}</td><td>{s.kg}kg<br/><span style={{fontSize:10,color:'var(--t2)'}}>{s.sets}×{s.reps}</span>{cur&&sqB&&<div className="rm-logged">✓ {sqB.kg}kg</div>}</td><td>{rs.kg}kg<br/><span style={{fontSize:10,color:'var(--t2)'}}>{rs.sets}×{rs.reps}</span></td><td>{bs.kg}kg<br/><span style={{fontSize:10,color:'var(--t2)'}}>{bs.sets}×{bs.reps}</span></td><td>{cs.sets}×{cs.rt}<br/><span style={{fontSize:10,color:'var(--t2)'}}>{cs.note}</span></td></tr>;})}</tbody></table></div>}
-    </div></div>
-  );
+  return <div className="screen"><div className="pad">
+    <div style={{marginBottom:16}}><h2>Progress</h2><div style={{display:'flex',gap:8,marginTop:6,flexWrap:'wrap'}}><Chip type="blue">Vecka {week}</Chip><Chip type="gray">Mål: 84–85 kg</Chip></div></div>
+    <div className="prog-card"><div style={{display:'flex',justifyContent:'space-between',marginBottom:10}}><span style={{fontSize:15,fontWeight:600}}>⚖️ Kroppsvikt</span></div><div className="prog-two"><div><div className="prog-col-lbl">Veckans mål</div><div className="prog-col-val">{bwStep.bw} kg</div><div className="prog-col-sub">v{bwStep.w[0]}–{bwStep.w[1]}</div></div><div><div className="prog-col-lbl">Senast</div><div className="prog-col-val">{latestBW!=null?`${latestBW} kg`:'—'}</div></div></div><div className="prog-status"><div className="prog-dot" style={{background:bwDiff==null?'var(--t3)':bwDiff<=0.5?'var(--green)':'var(--amber)'}}/><span style={{fontSize:12,fontWeight:500}}>{bwDiff==null?'Ej loggad':bwDiff<=-0.5?`${Math.abs(bwDiff).toFixed(1)} kg under mål — bra 🎯`:bwDiff<=0.5?'På målet ✓':`${bwDiff.toFixed(1)} kg över veckamålet`}</span></div></div>
+    {Object.entries(PROGRESSIONS).map(([name,prog])=>{
+      const step=getStep(prog.steps,week);let tgtTxt,logTxt,dot,txt;
+      if(prog.type==='kg'){tgtTxt=`${step.kg} kg · ${step.s}×${step.r}`;const b=getBestKg(workouts,name,week);if(!b){logTxt='—';dot='var(--t3)';txt='Ej loggat';}else{logTxt=`${b.kg} kg · ${b.sets}×${b.reps}`;const d=b.kg-step.kg;if(d>0){dot='var(--green)';txt=`+${d} kg över schemat 🎯`;}else if(d===0){dot='var(--green)';txt='På schemat ✓';}else{dot='var(--amber)';txt=`${Math.abs(d)} kg under`;}}}
+      else{tgtTxt=`${step.s}×${step.rt} reps · ${step.note}`;const b=getBestReps(workouts,name,week);if(!b){logTxt='—';dot='var(--t3)';txt='Ej loggat';}else{logTxt=`${b.sets}×${b.reps}${b.kg?` +${b.kg}kg`:''}`;const d=b.reps-step.rt;if(d>0){dot='var(--green)';txt=`+${d} reps 🎯`;}else if(d===0){dot='var(--green)';txt='På schemat ✓';}else{dot='var(--amber)';txt=`${Math.abs(d)} reps under`;}}}
+      return <div key={name} className="prog-card"><div style={{marginBottom:10,fontSize:15,fontWeight:600}}>{prog.icon} {name}</div><div className="prog-two"><div><div className="prog-col-lbl">Veckans mål</div><div className="prog-col-val" style={{fontSize:13}}>{tgtTxt}</div></div><div><div className="prog-col-lbl">Bäst v.{week}</div><div className="prog-col-val" style={{fontSize:13,color:dot!=='var(--t3)'?dot:'var(--t2)'}}>{logTxt}</div></div></div><div className="prog-status"><div className="prog-dot" style={{background:dot}}/><span style={{fontSize:12,fontWeight:500}}>{txt}</span></div></div>;
+    })}
+    <div className="roadmap-toggle" onClick={()=>setRm(o=>!o)}><span style={{fontSize:13,fontWeight:600}}>Hela planen v22–32</span><span className={`coll-arr${rm?' open':''}`}>▼</span></div>
+    {rm&&<div style={{background:'var(--s2)',border:'1px solid var(--border)',borderRadius:12,overflow:'hidden',marginBottom:8}}><table className="rm-table"><thead><tr><th>Veckor</th><th>Knäböj</th><th>RDL</th><th>Bänk</th><th>Chins</th></tr></thead><tbody>{PROGRESSIONS['Knäböj (Back Squat)'].steps.map((s,i)=>{const rs=PROGRESSIONS['Rumänsk marklyft (RDL)'].steps[i],bs=PROGRESSIONS['Bänkpress'].steps[i],cs=PROGRESSIONS['Chins (Pull-ups)'].steps[i];const cur=week>=s.w[0]&&week<=s.w[1];const sqB=getBestKg(workouts,'Knäböj (Back Squat)',week);return <tr key={i} className={cur?'cur':''}><td><strong>{s.w[0]}–{s.w[1]}</strong>{cur&&<div style={{fontSize:9,color:'var(--green)',fontWeight:600}}>◀ Nu</div>}</td><td>{s.kg}kg<br/><span style={{fontSize:10,color:'var(--t2)'}}>{s.s}×{s.r}</span>{cur&&sqB&&<div className="rm-logged">✓ {sqB.kg}kg</div>}</td><td>{rs.kg}kg<br/><span style={{fontSize:10,color:'var(--t2)'}}>{rs.s}×{rs.r}</span></td><td>{bs.kg}kg<br/><span style={{fontSize:10,color:'var(--t2)'}}>{bs.s}×{bs.r}</span></td><td>{cs.s}×{cs.rt}<br/><span style={{fontSize:10,color:'var(--t2)'}}>{cs.note}</span></td></tr>;})}</tbody></table></div>}
+  </div></div>;
 }
 
-// ══ APP ROOT ══════════════════════════════════════════════════════
+// ── ADMIN ─────────────────────────────────────────────────────────
+function AdminScreen({allWorkouts,allMeals,allProfiles,customExercises,addExercise,deleteExercise,loadAdminData}){
+  const [view,setView]=useState('users');
+  const [selUser,setSelUser]=useState(null);
+  const [exName,setExName]=useState('');const [exCat,setExCat]=useState('💪 Överkropp');const [busy,setBusy]=useState(false);
+  const userWorkouts=selUser?allWorkouts.filter(w=>w.user_id===selUser.user_id):[];
+  async function doAddEx(){
+    if(!exName.trim()){alert('Ange ett övningsnamn.');return;}
+    setBusy(true);await addExercise(exName.trim(),exCat);setExName('');setBusy(false);
+  }
+  return <div className="screen"><div className="pad">
+    <div style={{marginBottom:16}}><h2>🔧 Admin</h2><p style={{fontSize:12,color:'var(--t2)',marginTop:3}}>Inloggad som {ADMIN_EMAIL}</p></div>
+    <div className="qa-cats" style={{marginBottom:16}}>{['users','exercises'].map(v=><button key={v} className={`qa-cat${view===v?' active':''}`} onClick={()=>{setView(v);setSelUser(null);}}>{v==='users'?`👥 Användare (${allProfiles.length})`:'⭐ Övningsbibliotek'}</button>)}</div>
+    {view==='users'&&!selUser&&<>
+      <div className="card-title" style={{marginBottom:8}}>Alla användare</div>
+      {allProfiles.length===0&&<div className="empty">Inga användarprofiler skapade än.<br/>Användare visas efter att de slutfört onboarding.</div>}
+      {allProfiles.map(p=>{const lastWo=allWorkouts.filter(w=>w.user_id===p.user_id).sort((a,b)=>b.date.localeCompare(a.date))[0];return <div key={p.user_id} className="admin-user-card" onClick={()=>setSelUser(p)}>
+        <div className="admin-avatar">{getInitials(p.display_name||p.email||'?')}</div>
+        <div style={{flex:1}}>
+          <div style={{fontWeight:600,marginBottom:2}}>{p.display_name||p.email||'Okänd'}</div>
+          <div style={{fontSize:11,color:'var(--t2)'}}>{p.email}</div>
+          <div style={{fontSize:11,color:'var(--t2)',marginTop:2}}>{(p.goals||[]).join(', ')||'Inga mål angivna'}</div>
+        </div>
+        <div style={{textAlign:'right',fontSize:11,color:'var(--t2)'}}>{lastWo?<><div style={{color:'var(--green)',fontWeight:500}}>Senaste pass</div><div>{fmtDate(lastWo.date)}</div></>:<div>Inget pass loggat</div>}</div>
+      </div>;})}
+    </>}
+    {view==='users'&&selUser&&<>
+      <button className="back-btn" onClick={()=>setSelUser(null)}>← Tillbaka till alla</button>
+      <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:16}}>
+        <div className="admin-avatar" style={{width:52,height:52,fontSize:22}}>{getInitials(selUser.display_name||selUser.email||'?')}</div>
+        <div>
+          <div style={{fontSize:17,fontWeight:700}}>{selUser.display_name||selUser.email}</div>
+          <div style={{fontSize:12,color:'var(--t2)'}}>{selUser.email} · {selUser.age_range||'ålder ej angiven'} · {selUser.weight_kg||'?'} kg</div>
+          <div style={{fontSize:11,color:'var(--t2)',marginTop:2}}>Mål: {(selUser.goals||[]).join(', ')||'—'}</div>
+        </div>
+      </div>
+      <div className="card-title" style={{marginBottom:8}}>Senaste pass ({userWorkouts.length} totalt)</div>
+      {userWorkouts.length===0&&<div className="empty">Inga pass loggade.</div>}
+      {userWorkouts.slice(0,10).map(w=>{const ds=fmtDate(w.date);return <div key={w.id} className="log-entry"><div className="log-entry-head"><div><div className="log-entry-title">{w.type}</div><div style={{fontSize:11,color:'var(--t2)'}}>{w.week?`V${w.week} · `:''}{ds}</div></div></div><div className="log-entry-meta"><Chip type="gray">RPE {w.rpe}</Chip><Chip type={parseInt(w.groin)>=4?'red':parseInt(w.groin)>=2?'amber':'green'}>Ljumske {w.groin}/10</Chip>{w.bodyweight&&<Chip type="gray">⚖ {w.bodyweight}kg</Chip>}</div>{w.exercises&&w.exercises.length>0&&!isCardioType(w.type)&&<div className="log-entry-exs">{w.exercises.slice(0,4).map((e,i)=><div key={i} className="log-entry-ex"><span style={{color:'var(--t1)',fontWeight:500}}>{e.name}</span><span>{[e.sets&&e.reps&&`${e.sets}×${e.reps}`,e.kg&&`${e.kg}kg`].filter(Boolean).join(' · ')}</span></div>)}</div>}</div>;})}
+    </>}
+    {view==='exercises'&&<>
+      <div className="card-title" style={{marginBottom:8}}>Lägg till övning</div>
+      <div className="card">
+        <div className="field"><label>Kategori</label><select value={exCat} onChange={e=>setExCat(e.target.value)}>{Object.keys(DEFAULT_EXERCISES).map(g=><option key={g}>{g}</option>)}</select></div>
+        <div className="field"><label>Övningsnamn</label><input value={exName} onChange={e=>setExName(e.target.value)} placeholder="t.ex. Cable Rows, Preacher Curl..."/></div>
+        <button className="btn btn-primary btn-full" disabled={busy} onClick={doAddEx}>{busy?'Sparar...':'+ Lägg till övning'}</button>
+      </div>
+      <div className="card-title" style={{marginBottom:8}}>Egna övningar ({customExercises.length})</div>
+      {customExercises.length===0&&<div className="empty">Inga egna övningar tillagda än.</div>}
+      {customExercises.map(e=><div key={e.id} className="log-entry"><div className="log-entry-head"><div><div className="log-entry-title">{e.name}</div><div style={{fontSize:11,color:'var(--t2)'}}>{e.category}</div></div><button className="del-btn" onClick={()=>{if(confirm('Ta bort övning?'))deleteExercise(e.id);}}>×</button></div></div>)}
+    </>}
+  </div></div>;
+}
+
+// ── APP ROOT ──────────────────────────────────────────────────────
 function App(){
   const [tab,setTab]=useState('today');
   const [session,setSession]=useState(null);
   const [loading,setLoading]=useState(true);
+  const [profile,setProfile]=useState(null);
+  const [showOnboarding,setShowOnboarding]=useState(false);
+  const [showProfile,setShowProfile]=useState(false);
+  const [showOptimize,setShowOptimize]=useState(false);
   const [workouts,setWorkouts]=useState([]);
   const [meals,setMeals]=useState({});
   const [mealsDone,setMealsDone]=useState({});
+  const [customExercises,setCustomExercises]=useState([]);
+  const [allWorkouts,setAllWorkouts]=useState([]);
+  const [allProfiles,setAllProfiles]=useState([]);
+  const isAdmin=session?.user?.email===ADMIN_EMAIL;
 
   useEffect(()=>{
-    if(!configured){setLoading(false);return;}
     sb.auth.getSession().then(({data})=>{setSession(data.session);setLoading(false);});
-    const {data:l}=sb.auth.onAuthStateChange((_e,s)=>setSession(s));
+    const {data:l}=sb.auth.onAuthStateChange((_,s)=>setSession(s));
+    window.addEventListener('showOnboarding',()=>setShowOnboarding(true));
     return ()=>l.subscription.unsubscribe();
   },[]);
 
@@ -473,32 +759,53 @@ function App(){
     const g={};(ml||[]).forEach(m=>{(g[m.date]=g[m.date]||[]).push(m);});setMeals(g);
     const {data:md}=await sb.from('meal_days').select('*');
     const dn={};(md||[]).forEach(d=>{dn[d.date]=d.completed;});setMealsDone(dn);
+    const {data:pr}=await sb.from('user_profiles').select('*').eq('user_id',session.user.id).single();
+    if(pr){setProfile(pr);if(!pr.onboarding_done)setShowOnboarding(true);else{const wo2=wo||[];if(wo2.length>0&&pr.first_log_date){const first=new Date(pr.first_log_date);const diff=(new Date()-first)/(1000*60*60*24);if(diff>=56&&!pr.optimize_shown)setShowOptimize(true);}}}
+    else{setShowOnboarding(true);}
+    const {data:exs}=await sb.from('exercises').select('*').order('created_at',{ascending:false});
+    setCustomExercises(exs||[]);
+    if(isAdmin){
+      const {data:allWo}=await sb.from('workouts').select('*').order('date',{ascending:false});setAllWorkouts(allWo||[]);
+      const {data:allPr}=await sb.from('user_profiles').select('*');setAllProfiles(allPr||[]);
+    }
   }
-  async function addWorkout(w){const {data}=await sb.from('workouts').insert(w).select().single();if(data)setWorkouts(p=>[data,...p]);}
+
+  async function addWorkout(w){
+    const {data}=await sb.from('workouts').insert(w).select().single();
+    if(data){setWorkouts(p=>[data,...p]);if(isAdmin)setAllWorkouts(p=>[data,...p]);
+      if(profile&&!profile.first_log_date){await sb.from('user_profiles').update({first_log_date:w.date}).eq('user_id',session.user.id);setProfile(pr=>({...pr,first_log_date:w.date}));}}
+  }
   async function deleteWorkout(id){await sb.from('workouts').delete().eq('id',id);setWorkouts(p=>p.filter(w=>w.id!==id));}
   async function addMeal(date,name,kcal,protein){const {data}=await sb.from('meals').insert({date,name,kcal:Math.round(kcal)||0,protein:Math.round(protein)||0}).select().single();if(data)setMeals(p=>({...p,[date]:[...(p[date]||[]),data]}));}
   async function deleteMeal(date,id){await sb.from('meals').delete().eq('id',id);setMeals(p=>({...p,[date]:(p[date]||[]).filter(e=>e.id!==id)}));}
   async function setDayDone(date,done){await sb.from('meal_days').upsert({date,completed:done},{onConflict:'user_id,date'});setMealsDone(p=>({...p,[date]:done}));}
+  async function addExercise(name,category){const {data}=await sb.from('exercises').insert({name,category}).select().single();if(data)setCustomExercises(p=>[data,...p]);}
+  async function deleteExercise(id){await sb.from('exercises').delete().eq('id',id);setCustomExercises(p=>p.filter(e=>e.id!==id));}
 
   const mealTotals=useMemo(()=>{const e=meals[todayStr()]||[];return e.reduce((t,x)=>({kcal:t.kcal+(x.kcal||0),protein:t.protein+(x.protein||0)}),{kcal:0,protein:0});},[meals]);
 
-  if(!configured)return <div className="config-warn"><strong>⚙️ Konfiguration saknas</strong><br/><br/>Klistra in din Supabase-URL och anon-nyckel högst upp i <code>index.html</code> (raderna med <code>SUPABASE_URL</code> och <code>SUPABASE_ANON_KEY</code>). Se README för instruktioner.</div>;
   if(loading)return <div className="loading-screen"><div className="spinner"/><div>Laddar...</div></div>;
   if(!session)return <AuthScreen/>;
+  if(showOnboarding)return <OnboardingScreen session={session} onDone={async()=>{setShowOnboarding(false);await loadAll();}}/>;
 
-  return (
-    <div style={{display:'flex',flexDirection:'column',height:'100%',background:'var(--bg)'}}>
-      <div className="header-bar"><span style={{fontSize:13,color:'var(--t2)'}}>👤 {session.user.user_metadata?.name||session.user.email}</span><button className="logout-btn" onClick={()=>sb.auth.signOut()}>Logga ut</button></div>
-      {tab==='today'&&<TodayScreen workouts={workouts} mealTotals={mealTotals} onGoTrain={()=>setTab('training')} onGoFood={()=>setTab('food')}/>}
-      {tab==='training'&&<TrainingScreen workouts={workouts} addWorkout={addWorkout} deleteWorkout={deleteWorkout}/>}
-      {tab==='food'&&<FoodScreen meals={meals} mealsDone={mealsDone} addMeal={addMeal} deleteMeal={deleteMeal} setDayDone={setDayDone}/>}
-      {tab==='progress'&&<ProgressScreen workouts={workouts}/>}
-      <BottomNav tab={tab} setTab={setTab}/>
+  return <div style={{display:'flex',flexDirection:'column',height:'100%',background:'var(--bg)'}}>
+    <div className="header-bar">
+      <span className="hb-logo">🏋️ FitTrack</span>
+      <button className="avatar-btn" onClick={()=>setShowProfile(true)}>{getInitials(profile?.display_name||session.user.user_metadata?.name||session.user.email)}</button>
     </div>
-  );
+    {tab==='today'&&<TodayScreen workouts={workouts} mealTotals={mealTotals} onGoTrain={()=>setTab('training')} onGoFood={()=>setTab('food')} profile={profile}/>}
+    {tab==='training'&&<TrainingScreen workouts={workouts} addWorkout={addWorkout} deleteWorkout={deleteWorkout} customExercises={customExercises}/>}
+    {tab==='food'&&<FoodScreen meals={meals} mealsDone={mealsDone} addMeal={addMeal} deleteMeal={deleteMeal} setDayDone={setDayDone}/>}
+    {tab==='progress'&&<ProgressScreen workouts={workouts}/>}
+    {tab==='admin'&&isAdmin&&<AdminScreen allWorkouts={allWorkouts} allMeals={meals} allProfiles={allProfiles} customExercises={customExercises} addExercise={addExercise} deleteExercise={deleteExercise} loadAdminData={loadAll}/>}
+    <BottomNav tab={tab} setTab={setTab} isAdmin={isAdmin}/>
+    {showProfile&&<ProfileSheet session={session} profile={profile} onClose={()=>setShowProfile(false)} onLogout={()=>{sb.auth.signOut();setShowProfile(false);}}/>}
+    {showOptimize&&<OptimizePopup onYes={()=>{setShowOptimize(false);setShowOnboarding(true);sb.from('user_profiles').update({optimize_shown:true}).eq('user_id',session.user.id);}} onNo={async()=>{setShowOptimize(false);await sb.from('user_profiles').update({optimize_shown:true}).eq('user_id',session.user.id);}}/>}
+  </div>;
 }
+
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}</script>
+<script>if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}</script>
 </body>
 </html>
