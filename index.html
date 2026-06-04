@@ -16,7 +16,7 @@
 html,body{height:100%;overflow:hidden}
 body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.5}
 #root{height:100%;display:flex;flex-direction:column}
-.screen{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 0 calc(var(--nav)+var(--sb)+8px);-webkit-overflow-scrolling:touch}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 0 calc(var(--nav)+var(--sb)+28px);-webkit-overflow-scrolling:touch}
 .pad{padding:16px}
 .card{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:12px}
 .ct{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--t2);text-transform:uppercase;margin-bottom:10px}
@@ -114,6 +114,21 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 .empty{text-align:center;padding:30px 16px;color:var(--t3);font-size:13px;line-height:1.6}
 .opt-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px}
 .opt-card{background:var(--s2);border:1px solid var(--gdim);border-radius:20px;padding:24px;max-width:340px;width:100%;text-align:center}
+
+.sec-tog{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;background:var(--s2);border:1px solid var(--border);border-radius:11px;cursor:pointer;margin-bottom:8px;user-select:none;-webkit-user-select:none}
+.sec-tog:active{opacity:.8}
+.sec-tog-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:7px}
+.sec-tog-badge{background:var(--green);color:#0a0a0a;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:700}
+.coll-icon{font-size:12px;color:var(--t2);transition:transform .2s}
+.coll-icon.open{transform:rotate(180deg)}
+.plan-content{background:var(--s1);border:1px solid var(--border);border-radius:11px;padding:12px 14px;margin-bottom:8px}
+.log-compact{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
+.log-compact:last-child{border-bottom:none}
+.log-compact-left{flex:1;min-width:0}
+.log-compact-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.log-compact-mac{font-size:11px;color:var(--t2);margin-top:1px}
+.future-badge{background:var(--bbg);color:var(--blue);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:500;margin-bottom:10px;display:inline-block}
+.past-badge{background:var(--s3);color:var(--t2);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:500;margin-bottom:10px;display:inline-block}
 </style>
 </head>
 <body>
@@ -511,7 +526,9 @@ function FoodScreen({meals,mealsDone,addMeal,delMeal,setDayDone}){
   const [dt,setDt]=useState(DAY_TM[new Date().getDay()]);
   const [vd,setVd]=useState(tod());
   const [qCat,setQCat]=useState('Snack');
-  // Planner state (local, not saved to DB until added)
+  const [showPlan,setShowPlan]=useState(true);
+  const [showQA,setShowQA]=useState(false);
+  // Planner state
   const [bfSel,setBfSel]=useState(-1);
   const [lMlb,setLMlb]=useState({...INIT_MLB});
   const [dMlb,setDMlb]=useState({...INIT_MLB});
@@ -523,6 +540,10 @@ function FoodScreen({meals,mealsDone,addMeal,delMeal,setDayDone}){
   const tot=entries.reduce((t,e)=>({kcal:t.kcal+(e.kcal||0),protein:t.protein+(e.protein||0)}),{kcal:0,protein:0});
   const isDone=!!mealsDone[vd];
   const isToday=vd===tod();
+  const isFuture=vd>tod();
+  const isPast=vd<tod();
+  // ✅ FIX: Ingen spärr på framtida datum — planering tillåts framåt
+  const navD=d=>{const x=new Date(vd+'T12:00:00');x.setDate(x.getDate()+d);setVd(x.toISOString().split('T')[0]);};
   const surplus=tot.kcal>tgt.k+200;
   const rem={k:tgt.k-tot.kcal,p:tgt.p-tot.protein};
   // Lunch builder
@@ -535,64 +556,133 @@ function FoodScreen({meals,mealsDone,addMeal,delMeal,setDayDone}){
   const dCR=dPN&&PAIR[dPN]?PAIR[dPN]:'';const dCRI=dCR?CARB.findIndex(x=>x.n===dCR):-1;const dECI=dMlb.cI>=0?dMlb.cI:dCRI;
   const dMP=cMac(PROT,dMlb.pI,dMlb.pG),dMC=cMac(CARB,dECI,dMlb.cG),dMV=cMac(VEGG,dMlb.vI,dMlb.vG);const dFk=dMlb.fI>0&&FETT[dMlb.fI]?FETT[dMlb.fI].k:0;
   const dTot={k:dMP.k+dMC.k+dMV.k+dFk,p:dMP.p+dMC.p+dMV.p};
-  function buildName(mlb,effCI){const parts=[];if(mlb.pI>=0)parts.push(`${mlb.pG}g ${PROT[mlb.pI].n}`);if(effCI>=0&&CARB[effCI]&&CARB[effCI].k>0)parts.push(`${mlb.cI<0&&CARB[effCI]?mlb.cG+'g':''}${CARB[effCI].n.replace(' (torrt)','').replace(' (rå)','').replace(' Frebaco','')}`);if(mlb.vI>=0&&VEGG[mlb.vI])parts.push(`${mlb.vG}g ${VEGG[mlb.vI].n}`);if(mlb.fI>0)parts.push(FETT[mlb.fI].n);return parts.join(' + ')||'Måltid';}
-  // Count how many planner slots are filled
-  const planCount=[bfSel>=0?1:0,lTot.k>0?1:0,dt==='tuesday'&&preSel>=0?1:0,dt==='football'&&preSel>=0?1:0,dTot.k>0?1:0,kvSel>=0?1:0].reduce((a,b)=>a+b,0);
+  function bldName(mlb,eCI){const parts=[];if(mlb.pI>=0)parts.push(`${mlb.pG}g ${PROT[mlb.pI].n}`);if(eCI>=0&&CARB[eCI]&&CARB[eCI].k>0)parts.push(`${mlb.cG}g ${CARB[eCI].n.replace(' (torrt)','').replace(' (rå)','').replace(' Frebaco','')}`);if(mlb.vI>=0&&VEGG[mlb.vI])parts.push(`${mlb.vG}g ${VEGG[mlb.vI].n}`);if(mlb.fI>0)parts.push(FETT[mlb.fI].n);return parts.join(' + ')||'Måltid';}
+  const planCount=[bfSel>=0?1:0,lTot.k>0?1:0,(dt==='tuesday'||dt==='football')&&preSel>=0?1:0,dTot.k>0?1:0,kvSel>=0?1:0].reduce((a,b)=>a+b,0);
   function addAllPlanned(){
-    if(bfSel>=0){const f=BF_OPT[bfSel];addMeal(vd,f.n,f.k,f.p);}
-    if(lTot.k>0||lTot.p>0){addMeal(vd,buildName(lMlb,lECI),lTot.k,lTot.p);setLMlb({...INIT_MLB});}
-    if(preSel>=0&&(dt==='tuesday'||dt==='football')){const f=PRE_OPT[preSel];addMeal(vd,f.n,f.k,f.p);}
-    if(dTot.k>0||dTot.p>0){addMeal(vd,buildName(dMlb,dECI),dTot.k,dTot.p);setDMlb({...INIT_MLB});}
-    if(kvSel>=0){const f=KVALL_OPT[kvSel];addMeal(vd,f.n,f.k,f.p);}
-    setBfSel(-1);setPreSel(-1);setKvSel(-1);
+    if(bfSel>=0){const f=BF_OPT[bfSel];addMeal(vd,f.n,f.k,f.p);setBfSel(-1);}
+    if(lTot.k>0||lTot.p>0){addMeal(vd,bldName(lMlb,lECI),lTot.k,lTot.p);setLMlb({...INIT_MLB});}
+    if(preSel>=0&&(dt==='tuesday'||dt==='football')){const f=PRE_OPT[preSel];addMeal(vd,f.n,f.k,f.p);setPreSel(-1);}
+    if(dTot.k>0||dTot.p>0){addMeal(vd,bldName(dMlb,dECI),dTot.k,dTot.p);setDMlb({...INIT_MLB});}
+    if(kvSel>=0){const f=KVALL_OPT[kvSel];addMeal(vd,f.n,f.k,f.p);setKvSel(-1);}
   }
   const sugs=[];
   if(!surplus&&rem.k>0&&rem.k<=150&&rem.p<=10)sugs.push({ic:'🍌',tx:`${rem.k} kcal kvar — banan (89 kcal)`,n:'1 banan',k:89,p:1});
   if(!surplus&&rem.p>0&&rem.p<=30&&rem.k<=250)sugs.push({ic:'💪',tx:`${rem.p}g protein kvar — proteinshake (+25g)`,n:'Proteinshake + vatten',k:120,p:25});
-  const navD=d=>{const x=new Date(vd+'T12:00:00');x.setDate(x.getDate()+d);const s=x.toISOString().split('T')[0];setVd(s>tod()?tod():s);};
-  // Reusable compact dropdown slot
-  const compactSlot=(label,opts,val,setVal,tot2)=><div className="plan-slot">
-    <div className="ps-head"><span className="ps-label">{label}</span>{val>=0&&opts[val]?<span className="ps-kcal">{opts[val].k} kcal</span>:<span style={{fontSize:12,color:'var(--t3)'}}>Ej planerat</span>}<button className="ps-add" disabled={val<0} onClick={()=>{if(val>=0){addMeal(vd,opts[val].n,opts[val].k,opts[val].p);setVal(-1);}}}>+ Lägg i logg</button></div>
-    <select style={{fontSize:13}} value={val} onChange={e=>setVal(+e.target.value)}><option value="-1">Välj alternativ...</option>{opts.map((o,i)=><option key={i} value={i}>{o.n} — {o.k} kcal</option>)}</select>
-    {val>=0&&opts[val]&&<div className="macrow"><span className="mk mk-k">🔥 {opts[val].k}</span><span className="mk mk-p">💪 {opts[val].p}g</span></div>}
+  // Compact planner slot (dropdown)
+  const compSlot=(label,opts,val,setV)=><div style={{marginBottom:10}}>
+    <div style={{fontSize:12,fontWeight:600,color:'var(--t2)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:5}}>{label}</div>
+    <div style={{display:'flex',gap:8,alignItems:'center'}}>
+      <select style={{flex:1,fontSize:13,padding:'8px 10px'}} value={val} onChange={e=>setV(+e.target.value)}>
+        <option value="-1">Välj alternativ...</option>
+        {opts.map((o,i)=><option key={i} value={i}>{o.n} — {o.k} kcal</option>)}
+      </select>
+      <button style={{padding:'8px 12px',background:'var(--green)',color:'#0a0a0a',border:'none',borderRadius:8,fontWeight:600,fontSize:12,cursor:'pointer',whiteSpace:'nowrap',opacity:val<0?.4:1}} disabled={val<0} onClick={()=>{if(val>=0){addMeal(vd,opts[val].n,opts[val].k,opts[val].p);setV(-1);}}}>+ Lägg</button>
+    </div>
+    {val>=0&&opts[val]&&<div style={{fontSize:11,color:'var(--t2)',marginTop:4}}>🔥 {opts[val].k} kcal · 💪 {opts[val].p}g P</div>}
   </div>;
-  const builderSlot=(label,mlb,setMlb,tot2,effCI,cRecI,pName,cRec)=><div className="plan-slot">
-    <div className="ps-head"><span className="ps-label">{label}</span>{tot2.k>0?<span className="ps-kcal">{tot2.k} kcal</span>:<span style={{fontSize:12,color:'var(--t3)'}}>Ej planerat</span>}<button className="ps-add" disabled={!tot2.k&&!tot2.p} onClick={()=>{addMeal(vd,buildName(mlb,effCI),tot2.k,tot2.p);setMlb({...INIT_MLB});}}>+ Lägg i logg</button></div>
-    <div className="field"><label style={{fontSize:11,fontWeight:600,color:'var(--t2)',textTransform:'uppercase',letterSpacing:'.05em',display:'block',marginBottom:4}}>Proteinkälla (rå)</label><select style={{fontSize:13,marginBottom:4}} value={mlb.pI} onChange={e=>setMlb(m=>({...m,pI:+e.target.value,cI:-1}))}><option value="-1">Välj protein...</option>{PROT.map((x,i)=><option key={i} value={i}>{x.n} — {x.k} kcal/100g</option>)}</select>{mlb.pI>=0&&<div className="gram-row"><span>Gram (rå):</span><input className="gram-in" type="number" value={mlb.pG} onChange={e=>setMlb(m=>({...m,pG:+e.target.value||200}))}/></div>}</div>
-    {pName&&cRec&&<div className="rec">💡 Med {mlb.pG}g {pName.toLowerCase()} → {mlb.cG}g {cRec.replace(' (torrt)','').replace(' (rå)','').replace(' Frebaco','')} rekommenderas.</div>}
-    <div className="field"><label style={{fontSize:11,fontWeight:600,color:'var(--t2)',textTransform:'uppercase',letterSpacing:'.05em',display:'block',marginBottom:4}}>Kolhydrat (okokt/torrt)</label><select style={{fontSize:13,marginBottom:4}} value={mlb.cI>=0?mlb.cI:cRecI} onChange={e=>setMlb(m=>({...m,cI:+e.target.value}))}><option value="-1">Välj...</option>{CARB.map((x,i)=><option key={i} value={i}>{x.n} — {x.k} kcal/100g</option>)}</select>{(mlb.cI>=0||cRecI>=0)&&<div className="gram-row"><span>Gram:</span><input className="gram-in" type="number" value={mlb.cG} onChange={e=>setMlb(m=>({...m,cG:+e.target.value||0}))}/></div>}</div>
-    <div className="field"><label style={{fontSize:11,fontWeight:600,color:'var(--t2)',textTransform:'uppercase',letterSpacing:'.05em',display:'block',marginBottom:4}}>Grönsaker</label><select style={{fontSize:13}} value={mlb.vI} onChange={e=>setMlb(m=>({...m,vI:+e.target.value}))}><option value="-1">Ingen / välj...</option>{VEGG.map((x,i)=><option key={i} value={i}>{x.n}</option>)}</select>{mlb.vI>=0&&<div className="gram-row"><span>Gram:</span><input className="gram-in" type="number" value={mlb.vG} onChange={e=>setMlb(m=>({...m,vG:+e.target.value||0}))}/></div>}</div>
-    <div className="field"><label style={{fontSize:11,fontWeight:600,color:'var(--t2)',textTransform:'uppercase',letterSpacing:'.05em',display:'block',marginBottom:4}}>Extra fett</label><select style={{fontSize:13}} value={mlb.fI} onChange={e=>setMlb(m=>({...m,fI:+e.target.value}))}>{FETT.map((x,i)=><option key={i} value={i}>{x.n}{x.k?` — ${x.k} kcal`:''}</option>)}</select></div>
-    {<div className="macrow">{tot2.k>0?<><span className="mk mk-k">🔥 {tot2.k} kcal</span><span className="mk mk-p">💪 {tot2.p}g P</span></>:<span style={{fontSize:12,color:'var(--t3)'}}>Välj protein och kolhydrat ovan</span>}</div>}
+  // Builder slot (protein + carb)
+  const bldSlot=(label,mlb,setMlb,tot2,eCI,cRI,pN,cR)=><div style={{marginBottom:10}}>
+    <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:5}}>
+      <span style={{fontSize:12,fontWeight:600,color:'var(--t2)',textTransform:'uppercase',letterSpacing:'.05em'}}>{label}</span>
+      {tot2.k>0&&<span style={{fontSize:12,color:'var(--green)',fontWeight:600}}>{tot2.k} kcal · {tot2.p}g P</span>}
+    </div>
+    <div style={{display:'flex',gap:8,marginBottom:5}}>
+      <select style={{flex:1,fontSize:13,padding:'8px 10px'}} value={mlb.pI} onChange={e=>setMlb(m=>({...m,pI:+e.target.value,cI:-1}))}>
+        <option value="-1">Proteinkälla...</option>{PROT.map((x,i)=><option key={i} value={i}>{x.n}</option>)}
+      </select>
+      {mlb.pI>=0&&<input style={{width:60,padding:'8px 8px',textAlign:'center',fontSize:13}} type="number" value={mlb.pG} onChange={e=>setMlb(m=>({...m,pG:+e.target.value||200}))} placeholder="g"/>}
+    </div>
+    <div style={{display:'flex',gap:8,marginBottom:5}}>
+      <select style={{flex:1,fontSize:13,padding:'8px 10px'}} value={mlb.cI>=0?mlb.cI:eCI<0?-1:eCI} onChange={e=>setMlb(m=>({...m,cI:+e.target.value}))}>
+        <option value="-1">Kolhydrat...</option>{CARB.map((x,i)=><option key={i} value={i}>{x.n}</option>)}
+      </select>
+      {(mlb.cI>=0||(eCI>=0&&eCI<CARB.length))&&<input style={{width:60,padding:'8px 8px',textAlign:'center',fontSize:13}} type="number" value={mlb.cG} onChange={e=>setMlb(m=>({...m,cG:+e.target.value||0}))} placeholder="g"/>}
+    </div>
+    {pN&&cR&&<div style={{fontSize:11,color:'var(--blue)',background:'var(--bbg)',borderRadius:6,padding:'5px 8px',marginBottom:5}}>💡 Med {mlb.pG}g {pN.toLowerCase()} → {mlb.cG}g {cR.replace(' (torrt)','').replace(' (rå)','').replace(' Frebaco','')} rekommenderas</div>}
+    <div style={{display:'flex',gap:8,marginBottom:5}}>
+      <select style={{flex:2,fontSize:13,padding:'8px 10px'}} value={mlb.vI} onChange={e=>setMlb(m=>({...m,vI:+e.target.value}))}>
+        <option value="-1">Grönsaker (valfritt)...</option>{VEGG.map((x,i)=><option key={i} value={i}>{x.n}</option>)}
+      </select>
+      <select style={{flex:2,fontSize:13,padding:'8px 10px'}} value={mlb.fI} onChange={e=>setMlb(m=>({...m,fI:+e.target.value}))}>
+        {FETT.map((x,i)=><option key={i} value={i}>{x.n}</option>)}
+      </select>
+    </div>
+    <button style={{width:'100%',padding:'9px',background:tot2.k>0?'var(--green)':'var(--s3)',color:tot2.k>0?'#0a0a0a':'var(--t3)',border:'none',borderRadius:8,fontWeight:600,fontSize:13,cursor:tot2.k>0?'pointer':'default',fontFamily:'inherit'}} disabled={!tot2.k&&!tot2.p} onClick={()=>{addMeal(vd,bldName(mlb,eCI),tot2.k,tot2.p);setMlb({...INIT_MLB});}}>
+      {tot2.k>0?`+ Lägg till (${tot2.k} kcal · ${tot2.p}g P)`:'Välj protein och kolhydrat'}
+    </button>
   </div>;
+
   return <div className="screen"><div className="pad">
-    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}><h2>Mat</h2><select value={dt} onChange={e=>setDt(e.target.value)} style={{width:'auto',fontSize:12,padding:'6px 10px'}}><option value="tuesday">Tisdag—2800</option><option value="gym">Gym—2400</option><option value="football">Fotboll—2600</option><option value="rest">Vila—2200</option></select></div>
-    <div className="datenav"><button className="datenav-btn" onClick={()=>navD(-1)}>‹</button><input type="date" value={vd} onChange={e=>setVd(e.target.value)}/><button className="datenav-btn" onClick={()=>navD(1)}>›</button></div>
-    {!isToday&&<div className="msg mi2" style={{marginBottom:10}}>📅 Historik: {fD(vd)}</div>}
-    <div className="card"><div className="ct">Dagstotal</div><PBar label="🔥 Kalorier" val={tot.kcal} max={tgt.k} unit=" kcal"/><PBar label="💪 Protein" val={tot.protein} max={tgt.p} unit="g"/></div>
-    {surplus&&<div className="surplus"><div style={{fontSize:13,fontWeight:600,color:'var(--red)',marginBottom:3}}>⚠️ Kaloriöverskott +{tot.kcal-tgt.k} kcal</div><div style={{fontSize:12,color:'var(--t2)',lineHeight:1.5}}>{dt==='rest'?'Vilodagar bör ha underskott för viktnedgång.':dt==='gym'?'Gymdagar bör ha ett lätt underskott.':'Justera kvällssnacket eller middagen.'}</div></div>}
-    {sugs.length>0&&!isDone&&<div className="sugs"><div style={{fontSize:11,fontWeight:600,color:'var(--amber)',textTransform:'uppercase',marginBottom:7}}>💡 Nå målet</div>{sugs.map((s,i)=><div key={i} className="sug-item"><span style={{fontSize:16}}>{s.ic}</span><span className="sug-text">{s.tx}</span><button className="sug-add" onClick={()=>addMeal(vd,s.n,s.k,s.p)}>+ Lägg</button></div>)}</div>}
+    {/* Header */}
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+      <h2>Mat</h2>
+      <select value={dt} onChange={e=>setDt(e.target.value)} style={{width:'auto',fontSize:12,padding:'6px 10px'}}>
+        <option value="tuesday">Tisdag—2800</option><option value="gym">Gym—2400</option>
+        <option value="football">Fotboll—2600</option><option value="rest">Vila—2200</option>
+      </select>
+    </div>
+    {/* Date nav — ingen spärr på framtida datum */}
+    <div className="datenav">
+      <button className="datenav-btn" onClick={()=>navD(-1)}>‹</button>
+      <input type="date" value={vd} onChange={e=>setVd(e.target.value)}/>
+      <button className="datenav-btn" onClick={()=>navD(1)}>›</button>
+    </div>
+    {isFuture&&<div className="future-badge">🗓️ Planering: {fD(vd)}</div>}
+    {isPast&&<div className="past-badge">📋 Historik: {fD(vd)}</div>}
+    {/* Progress — alltid synlig */}
+    <div className="card">
+      <div className="ct">Dagstotal · {tgt.k} kcal mål</div>
+      <PBar label="🔥 Kalorier" val={tot.kcal} max={tgt.k} unit=" kcal"/>
+      <PBar label="💪 Protein" val={tot.protein} max={tgt.p} unit="g"/>
+    </div>
+    {surplus&&!isDone&&<div style={{background:'var(--rbg)',border:'1px solid #7f1d1d',borderRadius:11,padding:'11px 13px',marginBottom:10}}><div style={{fontSize:13,fontWeight:600,color:'var(--red)',marginBottom:3}}>⚠️ Kaloriöverskott +{tot.kcal-tgt.k} kcal</div><div style={{fontSize:12,color:'var(--t2)',lineHeight:1.5}}>{dt==='rest'?'Vilodagar bör ha underskott för viktnedgång.':'Justera kvällssnacket eller middagen.'}</div></div>}
+    {sugs.length>0&&isToday&&!isDone&&<div style={{background:'var(--abg)',border:'1px solid #78350f',borderRadius:11,padding:'11px 13px',marginBottom:10}}><div style={{fontSize:11,fontWeight:600,color:'var(--amber)',textTransform:'uppercase',marginBottom:7}}>💡 Nå målet</div>{sugs.map((s,i)=><div key={i} className="sug-item"><span style={{fontSize:16}}>{s.ic}</span><span className="sug-text">{s.tx}</span><button className="sug-add" onClick={()=>addMeal(vd,s.n,s.k,s.p)}>+ Lägg</button></div>)}</div>}
     {isDone?<DoneCard tot={tot} tgt={tgt} cnt={entries.length} onUndo={()=>setDayDone(vd,false)}/>:<>
-      {isToday&&<>
-        <div className="ct" style={{marginBottom:8}}>📋 Planera dagen</div>
-        {compactSlot('🌅 Frukost',BF_OPT,bfSel,setBfSel,null)}
-        {builderSlot('☀️ Lunch',lMlb,setLMlb,lTot,lECI,lCRI,lPN,lCR)}
-        {(dt==='tuesday'||dt==='football')&&compactSlot('⚡ Pre-session snack',PRE_OPT,preSel,setPreSel,null)}
-        {builderSlot('🌙 Middag',dMlb,setDMlb,dTot,dECI,dCRI,dPN,dCR)}
-        {compactSlot('🌑 Kvällssnack',KVALL_OPT,kvSel,setKvSel,null)}
-        {planCount>0&&<div className="bulk-add"><span className="bulk-add-text">✓ {planCount} måltid{planCount!==1?'er':''} planerad{planCount!==1?'e':''}</span><button className="bulk-add-btn" onClick={addAllPlanned}>Lägg till alla i logg</button></div>}
-        <div className="card" style={{marginTop:4}}>
-          <div className="ct">Snabblägg till</div>
-          <div className="qa-cats">{Object.keys(QI).map(c=><button key={c} className={`qa-cat${qCat===c?' active':''}`} onClick={()=>setQCat(c)}>{c}</button>)}</div>
-          {QI[qCat].map((f,i)=><div key={i} className="qa-item"><div><div className="qi-name">{f.n}</div><div className="qi-mac">🔥 {f.k} kcal · 💪 {f.p}g P</div></div><button className="qi-add" onClick={()=>addMeal(vd,f.n,f.k,f.p)}>+</button></div>)}
-          <div className="custom-row"><input type="text" value={ca.n} onChange={e=>setCa(c=>({...c,n:e.target.value}))} placeholder="Annan matvara..."/><input type="number" value={ca.k} onChange={e=>setCa(c=>({...c,k:e.target.value}))} placeholder="kcal"/><input type="number" value={ca.p} onChange={e=>setCa(c=>({...c,p:e.target.value}))} placeholder="prot"/><button className="btn btn-secondary btn-sm" onClick={()=>{if(!ca.n||!ca.k)return;addMeal(vd,ca.n,+ca.k,+ca.p||0);setCa({n:'',k:'',p:''});}}>+</button></div>
+      {/* ── PLANNER: idag + framtid ── */}
+      {!isPast&&<>
+        <div className="sec-tog" onClick={()=>setShowPlan(p=>!p)}>
+          <div className="sec-tog-title">
+            📋 {isFuture?`Planera ${fD(vd)}`:'Planera dagens måltider'}
+            {planCount>0&&<span className="sec-tog-badge">{planCount}</span>}
+          </div>
+          <span className={`coll-icon${showPlan?' open':''}`}>▼</span>
         </div>
+        {showPlan&&<div className="plan-content">
+          {compSlot('🌅 Frukost',BF_OPT,bfSel,setBfSel)}
+          {bldSlot('☀️ Lunch',lMlb,setLMlb,lTot,lECI,lCRI,lPN,lCR)}
+          {(dt==='tuesday'||dt==='football')&&compSlot('⚡ Pre-session snack',PRE_OPT,preSel,setPreSel)}
+          {bldSlot('🌙 Middag',dMlb,setDMlb,dTot,dECI,dCRI,dPN,dCR)}
+          {compSlot('🌑 Kvällssnack',KVALL_OPT,kvSel,setKvSel)}
+          {planCount>1&&<button style={{width:'100%',marginTop:8,padding:'11px',background:'var(--gbg)',color:'var(--green)',border:'1px solid var(--gdim)',borderRadius:9,fontWeight:600,fontSize:13,cursor:'pointer',fontFamily:'inherit'}} onClick={addAllPlanned}>📋 Lägg till alla {planCount} planerade måltider i logg</button>}
+        </div>}
       </>}
-      <div className="ct" style={{marginBottom:8}}>Loggat {isToday?'idag':fD(vd)}</div>
-      {entries.length===0&&<div className="empty">Ingen mat loggad {isToday?'idag':'detta datum'}.</div>}
-      {entries.map(e=><div key={e.id} className="le"><div className="le-head"><div><div style={{fontSize:13,fontWeight:500}}>{e.name}</div><div style={{display:'flex',gap:8,marginTop:2}}><span style={{fontSize:12,color:'var(--t2)'}}>🔥 {e.kcal} kcal</span><span style={{fontSize:12,color:'var(--t2)'}}>💪 {e.protein}g P</span></div></div>{isToday&&<button className="db" onClick={()=>delMeal(vd,e.id)}>×</button>}</div></div>)}
-      {isToday&&entries.length>0&&<button className="btn btn-primary btn-full" style={{marginTop:4}} onClick={()=>setDayDone(vd,true)}>✅ Slutför dagen</button>}
+      {/* ── SNABBLÄGG: bara idag ── */}
+      {isToday&&<>
+        <div className="sec-tog" onClick={()=>setShowQA(p=>!p)}>
+          <div className="sec-tog-title">➕ Snabblägg till</div>
+          <span className={`coll-icon${showQA?' open':''}`}>▼</span>
+        </div>
+        {showQA&&<div style={{background:'var(--s2)',border:'1px solid var(--border)',borderRadius:11,padding:'12px 14px',marginBottom:8}}>
+          <div className="qa-cats">{Object.keys(QI).map(c=><button key={c} className={`qa-cat${qCat===c?' active':''}`} onClick={()=>setQCat(c)}>{c}</button>)}</div>
+          {QI[qCat].map((f,i)=><div key={i} className="qa-item"><div><div className="qi-name">{f.n}</div><div className="qi-mac">🔥 {f.k} · 💪 {f.p}g</div></div><button className="qi-add" onClick={()=>addMeal(vd,f.n,f.k,f.p)}>+</button></div>)}
+          <div className="custom-row"><input type="text" value={ca.n} onChange={e=>setCa(c=>({...c,n:e.target.value}))} placeholder="Annat..."/><input type="number" value={ca.k} onChange={e=>setCa(c=>({...c,k:e.target.value}))} placeholder="kcal"/><input type="number" value={ca.p} onChange={e=>setCa(c=>({...c,p:e.target.value}))} placeholder="prot"/><button className="btn btn-secondary btn-sm" onClick={()=>{if(!ca.n||!ca.k)return;addMeal(vd,ca.n,+ca.k,+ca.p||0);setCa({n:'',k:'',p:''});}}>+</button></div>
+        </div>}
+      </>}
+      {/* ── LOGGAT ── */}
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8,marginTop:4}}>
+        <span style={{fontSize:13,fontWeight:600,color:'var(--t2)',textTransform:'uppercase',letterSpacing:'.05em'}}>Loggat {isToday?'idag':isFuture?'(planerat)':fD(vd)}</span>
+        <span style={{fontSize:12,color:tot.kcal>0?'var(--green)':'var(--t3)',fontWeight:600}}>{tot.kcal} kcal · {tot.protein}g P</span>
+      </div>
+      {entries.length===0&&<div className="empty" style={{padding:'20px 0',fontSize:12}}>{isPast?'Ingen mat loggad detta datum.':isFuture?'Planera ovan och lägg till i logg.':'Planera eller snabblägg ovan.'}</div>}
+      <div style={{background:entries.length>0?'var(--s2)':'transparent',border:entries.length>0?'1px solid var(--border)':'none',borderRadius:11,padding:entries.length>0?'4px 14px':0,marginBottom:10}}>
+        {entries.map(e=><div key={e.id} className="log-compact"><div className="log-compact-left"><div className="log-compact-name">{e.name}</div><div className="log-compact-mac">🔥 {e.kcal} kcal · 💪 {e.protein}g P</div></div>{isToday&&<button className="db" style={{marginLeft:8}} onClick={()=>delMeal(vd,e.id)}>×</button>}</div>)}
+      </div>
+      {/* ── SLUTFÖR — tydlig, alltid synlig ── */}
+      {isToday&&entries.length>0&&<button className="btn btn-primary btn-full" style={{marginBottom:8}} onClick={()=>setDayDone(vd,true)}>✅ Slutför dagen</button>}
+      {isFuture&&entries.length>0&&<div style={{textAlign:'center',fontSize:12,color:'var(--t2)',padding:'8px 0'}}>Plan sparad för {fD(vd)} · {entries.length} måltider</div>}
     </>}
+    {/* ✅ FIX: Spacer för att undvika att nav täcker sista elementet */}
+    <div style={{height:16}}/>
   </div></div>;
 }
 function DoneCard({tot,tgt,cnt,onUndo}){
@@ -600,6 +690,7 @@ function DoneCard({tot,tgt,cnt,onUndo}){
   const ok=s=>s>=95?{c:'var(--green)',t:'✅ Nått'}:s>=80?{c:'var(--amber)',t:'Nära'}:{c:'var(--red)',t:'Under'};
   return <div className="done-card"><div style={{fontSize:16,fontWeight:700,color:'var(--green)',marginBottom:10}}>🎉 Dagen slutförd</div><div className="done-grid"><div className="done-stat"><div className="dsl">Kalorier</div><div className="dsv">{tot.kcal}</div><div className="dss" style={{color:ok(kp).c}}>{ok(kp).t} ({tgt.k})</div></div><div className="done-stat"><div className="dsl">Protein</div><div className="dsv">{tot.protein}g</div><div className="dss" style={{color:ok(pp).c}}>{ok(pp).t} ({tgt.p}g)</div></div><div className="done-stat"><div className="dsl">Måltider</div><div className="dsv">{cnt}</div></div><div className="done-stat"><div className="dsl">P% energi</div><div className="dsv">{tot.kcal?Math.round(tot.protein*4/tot.kcal*100):0}%</div></div></div><div style={{fontSize:13,color:'var(--green)',marginBottom:10}}>{kp>=95&&pp>=95?'Perfekt dag! 💪':kp>=80&&pp>=80?'Bra dag — nära båda.':'Fortsätt jobba!'}</div><button className="btn btn-ghost btn-sm" onClick={onUndo}>↩ Ångra</button></div>;
 }
+
 
 // ── PROGRESS ────────────────────────────────────────────────────
 function ProgScreen({wo}){
