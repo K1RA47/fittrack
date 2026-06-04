@@ -129,6 +129,17 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 .log-compact-mac{font-size:11px;color:var(--t2);margin-top:1px}
 .future-badge{background:var(--bbg);color:var(--blue);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:500;margin-bottom:10px;display:inline-block}
 .past-badge{background:var(--s3);color:var(--t2);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:500;margin-bottom:10px;display:inline-block}
+
+.wk-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:14px}
+.wk-col{display:flex;flex-direction:column;align-items:center;gap:3px}
+.wk-lbl{font-size:9px;font-weight:600;letter-spacing:.03em}
+.wk-bar-wrap{width:100%;height:44px;background:var(--s3);border-radius:4px;overflow:hidden;position:relative}
+.wk-bar{position:absolute;bottom:0;left:0;right:0;border-radius:3px 3px 0 0;transition:height .6s ease}
+.wk-min{font-size:8px;color:var(--t2);text-align:center}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:2px}
+.stat-box{background:var(--s3);border-radius:9px;padding:9px 4px;text-align:center}
+.stat-val{font-size:20px;font-weight:800;line-height:1;margin:3px 0}
+.stat-lbl{font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.04em}
 </style>
 </head>
 <body>
@@ -398,6 +409,68 @@ function CustomSheet({dayNum,plan,onSave,onClose}){
   </div>;
 }
 
+
+// ── WEEKLY STATS ──────────────────────────────────────────────
+function WeeklyStatsCard({workouts}){
+  const now=new Date();
+  const dow=now.getDay();
+  const mon=new Date(now);mon.setDate(now.getDate()-((dow+6)%7));
+  const DAYS=['Mån','Tis','Ons','Tor','Fre','Lör','Sön'];
+  const wd=DAYS.map((lb,i)=>{
+    const d=new Date(mon);d.setDate(mon.getDate()+i);
+    const ds=d.toISOString().split('T')[0];
+    const dw=workouts.filter(w=>w.date===ds);
+    const min=dw.reduce((t,w)=>t+(parseInt(w.duration)||0),0);
+    const hasGym=dw.some(w=>w.type&&w.type.toLowerCase().includes('gym'));
+    const hasCardio=dw.some(w=>isPureCardio(w.type));
+    const hasFoot=dw.some(w=>w.type&&(w.type.includes('Fotboll')||w.type.includes('Match')));
+    const hasRef=dw.some(w=>w.type&&w.type.includes('Dömt'));
+    const col=hasRef?'var(--amber)':hasGym?'var(--blue)':hasCardio?'var(--amber)':hasFoot?'var(--green)':dw.length>0?'var(--green)':'var(--s3)';
+    return {lb,ds,dw,min,isToday:ds===tod(),isFuture:ds>tod(),cnt:dw.length,col};
+  });
+  const tot=wd.reduce((t,d)=>({
+    p:t.p+d.cnt,
+    m:t.m+d.min,
+    s:t.s+d.dw.filter(w=>w.type&&w.type.toLowerCase().includes('gym')).length,
+    k:t.k+d.dw.filter(w=>isPureCardio(w.type)||(w.type&&w.type.includes('Fotboll'))).length,
+  }),{p:0,m:0,s:0,k:0});
+  const mx=Math.max(...wd.map(d=>d.min),45);
+  const wk=gwk(workouts);
+  return <div className="card" style={{marginBottom:12}}>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+      <span style={{fontSize:13,fontWeight:700}}>📊 Veckans träning</span>
+      <span style={{fontSize:11,color:'var(--t2)',fontWeight:500,background:'var(--s3)',padding:'2px 8px',borderRadius:6}}>v.{wk}</span>
+    </div>
+    {/* Bar chart per day */}
+    <div className="wk-grid">
+      {wd.map((d,i)=>{
+        const barH=d.min>0?Math.max(6,Math.round(d.min/mx*44)):d.cnt>0?4:0;
+        return <div key={i} className="wk-col">
+          <div className="wk-lbl" style={{color:d.isToday?'var(--green)':'var(--t2)'}}>{d.lb}</div>
+          <div className="wk-bar-wrap" style={{outline:d.isToday?'1px solid var(--gdim)':'none'}}>
+            {barH>0&&<div className="wk-bar" style={{height:barH+'px',background:d.col}}/>}
+          </div>
+          <div className="wk-min">{d.min>0?d.min+'m':d.cnt>0?'✓':''}</div>
+        </div>;
+      })}
+    </div>
+    {/* Stats grid */}
+    <div className="stat-grid">
+      {[
+        {ic:'🏆',v:tot.p,lb:'Pass',c:'var(--green)'},
+        {ic:'⏱',v:tot.m,lb:'Minuter',c:'var(--blue)'},
+        {ic:'💪',v:tot.s,lb:'Styrka',c:'var(--blue)'},
+        {ic:'🏃',v:tot.k,lb:'Kondition',c:'var(--amber)'},
+      ].map((s,i)=><div key={i} className="stat-box">
+        <div style={{fontSize:18}}>{s.ic}</div>
+        <div className="stat-val" style={{color:s.v>0?s.c:'var(--t3)'}}>{s.v}</div>
+        <div className="stat-lbl">{s.lb}</div>
+      </div>)}
+    </div>
+    {tot.p===0&&<div style={{fontSize:12,color:'var(--t3)',textAlign:'center',marginTop:10,paddingTop:10,borderTop:'1px solid var(--border)'}}>Inga pass loggade denna vecka ännu</div>}
+  </div>;
+}
+
 // ── TODAY ───────────────────────────────────────────────────────
 function TodayScreen({wo,mealTots,onGoTrain,onGoFood,profile,onSaveSched}){
   const [showC,setShowC]=useState(false);
@@ -409,6 +482,7 @@ function TodayScreen({wo,mealTots,onGoTrain,onGoFood,profile,onSaveSched}){
     <div className="screen">
       <div className="t-head"><div className="t-gr">God dag 👋</div><div className="t-day">{fDL(tod())}</div><div className="w-badge">Vecka {wk}</div></div>
       <div className="pad" style={{paddingTop:10}}>
+        {/* ── Dagens träning ── */}
         <div className="card">
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:4}}>
             <div className="wo-type" style={{color:tc[tp.tp]||'var(--t2)'}}>{tp.ic} {tp.lb} — Rekommenderat</div>
@@ -416,15 +490,27 @@ function TodayScreen({wo,mealTots,onGoTrain,onGoFood,profile,onSaveSched}){
           </div>
           <div className="wo-name">{tp.nm}</div>
           <ul className="wo-list">{tp.ex.map((e,i)=><li key={i}>{e}</li>)}</ul>
-          {tp.tp!=='rest'?<button className="btn btn-primary btn-sm" onClick={onGoTrain}>{todayWo.length?'✅ Loggat — visa pass':'→ Logga passet'}</button>:<span style={{color:'var(--t2)',fontSize:14}}>Vila 💤</span>}
+          {tp.tp!=='rest'?<>
+            {/* ✅ FIX: Knappen öppnar formuläret direkt — inga extra klick */}
+            <button className="btn btn-primary btn-sm" onClick={()=>onGoTrain(tp.nm)}>
+              {todayWo.length?`✅ ${todayWo.length} pass loggat — logga fler`:'+ Logga passet direkt'}
+            </button>
+          </>:<span style={{color:'var(--t2)',fontSize:14}}>Vila 💤</span>}
         </div>
+        {/* ── Dagens mat ── */}
         <div className="card">
           <div className="ct">Dagens mat · {tgt.k} kcal mål</div>
           <PBar label="🔥 Kalorier" val={mealTots.kcal} max={tgt.k} unit=" kcal"/>
           <PBar label="💪 Protein" val={mealTots.protein} max={tgt.p} unit="g"/>
           <button className="btn btn-secondary btn-sm btn-full" onClick={onGoFood} style={{marginTop:4}}>→ Planera & logga mat</button>
         </div>
-        <div style={{display:'flex',gap:7,flexWrap:'wrap'}}><Chip c="cb" t={`Vecka ${wk}`}/><Chip c={tp.tp==='rest'?'cx':tp.tp==='cardio'?'ca':'cg'} t={tp.lb}/><Chip c="cx" t={`${tgt.k} kcal · ${tgt.p}g P`}/></div>
+        {/* ── Veckans träningsstatistik ── */}
+        <WeeklyStatsCard workouts={wo}/>
+        <div style={{display:'flex',gap:7,flexWrap:'wrap',marginBottom:8}}>
+          <Chip c="cb" t={`Vecka ${wk}`}/>
+          <Chip c={tp.tp==='rest'?'cx':tp.tp==='cardio'?'ca':'cg'} t={tp.lb}/>
+          <Chip c="cx" t={`${tgt.k} kcal · ${tgt.p}g P`}/>
+        </div>
       </div>
     </div>
     {showC&&<CustomSheet dayNum={now.getDay()} plan={tp} onSave={(d,e)=>{onSaveSched(d,e);setShowC(false);}} onClose={()=>setShowC(false)}/>}
@@ -751,6 +837,85 @@ function AdminScreen({allWo,allUsers,allProfiles,customEx,addEx,delEx}){
   </div></div>;
 }
 
+
+// ── QUICK LOG SHEET ────────────────────────────────────────────
+function QuickLogSheet({profile,customEx,addWo,onClose,preType,weekNum}){
+  const [form,setForm]=useState({date:tod(),week:String(weekNum||22),type:preType||'',dur:'',rpe:7,groin:0,notes:'',cDist:'',cSpeed:'',rLvl:'',rGen:'Herr',rRole:'Huvuddomare'});
+  const [curEx,setCurEx]=useState([]);
+  const [exS,setExS]=useState('');const [exSt,setExSt]=useState('');const [exRp,setExRp]=useState('');const [exKg,setExKg]=useState('');
+  const [busy,setBusy]=useState(false);
+  const showGroin=profile?.show_groin||profile?.email===ADMIN;
+  const isAdmin2=profile?.email===ADMIN;
+  const isDistC=isDistCardio(form.type);
+  const isDurC=isDurCardio(form.type);
+  const isRef=isRefType(form.type);
+  const isAnyC=isDistC||isDurC;
+  const allExG=useMemo(()=>{const g={...EX};if(customEx&&customEx.length)g['⭐ Egna']=customEx.map(e=>e.name);return g;},[customEx]);
+  function addEx(){if(!exS)return;setCurEx(p=>[...p,{name:exS,sets:exSt,reps:exRp,kg:exKg}]);setExS('');setExSt('');setExRp('');setExKg('');}
+  async function save(){
+    if(!form.type){alert('Välj typ av pass.');return;}
+    setBusy(true);
+    let exercises=curEx,matchDetails=null;
+    if(isDistC)exercises=[{name:form.type,duration:form.dur,distance:form.cDist,speed:form.cSpeed}];
+    else if(isDurC)exercises=[{name:form.type,duration:form.dur}];
+    if(isRef)matchDetails={level:form.rLvl,gender:form.rGen,role:form.rRole};
+    await addWo({date:form.date,week:parseInt(form.week)||null,type:form.type,duration:parseInt(form.dur)||null,rpe:form.rpe,groin:showGroin?form.groin:0,exercises,notes:form.notes,match_details:matchDetails});
+    setBusy(false);onClose();
+  }
+  return <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
+    <div className="sheet" style={{maxHeight:'92vh'}}>
+      <div className="sh"/>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+        <span style={{fontSize:18,fontWeight:700}}>Logga pass</span>
+        <button onClick={onClose} style={{background:'none',border:'none',color:'var(--t2)',fontSize:22,cursor:'pointer',lineHeight:1}}>✕</button>
+      </div>
+      <div className="c2" style={{marginBottom:8}}>
+        <div className="field"><label>Datum</label><input type="date" value={form.date} onChange={e=>setForm(f=>({...f,date:e.target.value}))}/></div>
+        <div className="field"><label>Vecka</label><input type="number" value={form.week} onChange={e=>setForm(f=>({...f,week:e.target.value}))}/></div>
+      </div>
+      <div className="field"><label>Typ av pass</label>
+        <select value={form.type} onChange={e=>setForm(f=>({...f,type:e.target.value}))}>
+          <option value="">Välj typ...</option>
+          <optgroup label="🏋️ Styrka"><option>Gym — Underkropp</option><option>Gym — Överkropp</option><option>Gym — Helkropp</option></optgroup>
+          <optgroup label="⚽ Boll/Sport"><option>Fotboll</option><option>Cardio Step + Fotboll</option><option>Match</option></optgroup>
+          <optgroup label="🏃 Distans (km + fart)">{DIST_CARDIO.map(t=><option key={t}>{t}</option>)}</optgroup>
+          <optgroup label="⏱️ Tid (bara minuter)">{DUR_CARDIO.map(t=><option key={t}>{t}</option>)}</optgroup>
+          {(isAdmin2||profile?.is_referee)&&<optgroup label="🟡 Domare"><option>Dömt match</option></optgroup>}
+          <optgroup label="🔧 Övrigt"><option>Återhämtning</option><option>Annat</option></optgroup>
+        </select>
+      </div>
+      {/* ── Distans-cardio: km + fart ── */}
+      {isDistC&&<><div className="cdio">
+        <div className="cbox"><label>Tid (min)</label><input type="number" value={form.dur} onChange={e=>setForm(f=>({...f,dur:e.target.value}))} placeholder="30"/></div>
+        <div className="cbox"><label>Distans (km)</label><input type="number" step="0.1" value={form.cDist} onChange={e=>setForm(f=>({...f,cDist:e.target.value}))} placeholder="5.0"/></div>
+        <div className="cbox"><label>Fart (km/h)</label><input type="number" step="0.1" value={form.cSpeed} onChange={e=>setForm(f=>({...f,cSpeed:e.target.value}))} placeholder="8.0"/></div>
+      </div>{form.dur&&form.cDist&&<div style={{fontSize:12,color:'var(--green)',textAlign:'center',marginBottom:8}}>⚡ Snitt: {(parseFloat(form.cDist)/(parseFloat(form.dur)/60)).toFixed(1)} km/h · {(parseFloat(form.dur)/parseFloat(form.cDist)).toFixed(2)} min/km</div>}</>}
+      {/* ── Tid-cardio: bara minuter ── */}
+      {isDurC&&<div className="field"><label>Tid (min)</label><input type="number" value={form.dur} onChange={e=>setForm(f=>({...f,dur:e.target.value}))} placeholder="45"/></div>}
+      {/* ── Domare ── */}
+      {isRef&&<><div className="c2" style={{marginBottom:8}}><div className="field"><label>Kön</label><select value={form.rGen} onChange={e=>setForm(f=>({...f,rGen:e.target.value}))}><option>Herr</option><option>Dam</option><option>Mixed/Ungdom</option></select></div><div className="field"><label>Roll</label><select value={form.rRole} onChange={e=>setForm(f=>({...f,rRole:e.target.value}))}><option>Huvuddomare</option><option>Assistent</option></select></div></div><div className="field"><label>Matchnivå</label><select value={form.rLvl} onChange={e=>setForm(f=>({...f,rLvl:e.target.value}))}><option value="">Välj...</option>{REF_LVL.map(l=><option key={l}>{l}</option>)}</select></div><div className="field"><label>Tid (min)</label><input type="number" value={form.dur} onChange={e=>setForm(f=>({...f,dur:e.target.value}))} placeholder="90"/></div></>}
+      {/* ── Styrka/övrigt: övningar ── */}
+      {!isAnyC&&!isRef&&<><div className="field"><label>Tid (min)</label><input type="number" value={form.dur} onChange={e=>setForm(f=>({...f,dur:e.target.value}))} placeholder="60"/></div>
+      <div className="field"><label>Övningar {curEx.length>0&&<span style={{color:'var(--green)'}}>({curEx.length} tillagda)</span>}</label>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 38px 38px 50px auto',gap:5,marginBottom:6}}>
+          <select value={exS} onChange={e=>setExS(e.target.value)} style={{fontSize:12,padding:'7px 8px'}}><option value="">Välj övning...</option>{Object.entries(allExG).map(([g,es])=><optgroup key={g} label={g}>{es.map(e=><option key={e}>{e}</option>)}</optgroup>)}</select>
+          <input type="number" value={exSt} onChange={e=>setExSt(e.target.value)} placeholder="Set" style={{fontSize:12,padding:'7px 3px',textAlign:'center'}}/>
+          <input type="number" value={exRp} onChange={e=>setExRp(e.target.value)} placeholder="Rep" style={{fontSize:12,padding:'7px 3px',textAlign:'center'}}/>
+          <input type="number" step="0.5" value={exKg} onChange={e=>setExKg(e.target.value)} placeholder="kg" style={{fontSize:12,padding:'7px 3px',textAlign:'center'}}/>
+          <button className="btn btn-secondary btn-sm" onClick={addEx} style={{padding:'7px 9px'}}>+</button>
+        </div>
+        {curEx.length>0&&<div className="ex-chips">{curEx.map((e,i)=><div key={i} className="ex-chip">{e.name}{e.sets&&e.reps?` ${e.sets}×${e.reps}`:''}{e.kg?` @ ${e.kg}kg`:''}<button onClick={()=>setCurEx(p=>p.filter((_,j)=>j!==i))}>×</button></div>)}</div>}
+        {curEx.length===0&&<div style={{fontSize:12,color:'var(--t3)',padding:'8px 0'}}>Lägg till övningar ovan</div>}
+      </div></>}
+      <div className="field"><label>RPE — Ansträngningsnivå</label><Slider min={1} max={10} value={form.rpe} onChange={v=>setForm(f=>({...f,rpe:v}))} lo="Lätt (1)" hi="Max (10)"/></div>
+      {showGroin&&<div className="field"><label>🦵 Ljumske</label><Slider min={0} max={10} value={form.groin} onChange={v=>setForm(f=>({...f,groin:v}))} lo="Ingen (0)" hi="Allvarlig (10)"/></div>}
+      <div className="field"><label>Anteckningar (valfritt)</label><textarea value={form.notes} onChange={e=>setForm(f=>({...f,notes:e.target.value}))} placeholder="Hur kändes passet? Något att notera..."/></div>
+      <button className="btn btn-primary btn-full" disabled={busy||!form.type} onClick={save} style={{marginBottom:4}}>{busy?'Sparar...':'✅ Spara pass'}</button>
+      {!form.type&&<div style={{fontSize:11,color:'var(--t3)',textAlign:'center',marginTop:4}}>Välj typ av pass för att spara</div>}
+    </div>
+  </div>;
+}
+
 // ── APP ─────────────────────────────────────────────────────────
 function App(){
   const [tab,setTab]=useState('today');
@@ -760,6 +925,8 @@ function App(){
   const [needOb,setNeedOb]=useState(false);
   const [showP,setShowP]=useState(false);
   const [showOpt,setShowOpt]=useState(false);
+  const [showQL,setShowQL]=useState(false);   // QuickLog sheet
+  const [qlType,setQlType]=useState('');       // Pre-filled type
   const [wo,setWo]=useState([]);
   const [meals,setMeals]=useState({});
   const [mDone,setMDone]=useState({});
@@ -822,13 +989,17 @@ function App(){
   const name=profile?.display_name||session.user.email;
   return <div style={{display:'flex',flexDirection:'column',height:'100%',background:'var(--bg)'}}>
     <div className="hb"><span className="hb-logo">🏋️ FitTrack</span><button className="av-btn" onClick={()=>setShowP(true)} title="Profil">{gInit(name)}</button></div>
-    {tab==='today'&&<TodayScreen wo={wo} mealTots={mealTots} onGoTrain={()=>setTab('train')} onGoFood={()=>setTab('food')} profile={profile} onSaveSched={saveSched}/>}
+    {tab==='today'&&<TodayScreen wo={wo} mealTots={mealTots}
+        onGoTrain={type=>{setQlType(type||'');setShowQL(true);}}
+        onGoFood={()=>setTab('food')} profile={profile} onSaveSched={saveSched}/>}
     {tab==='train'&&<TrainScreen wo={wo} addWo={addWo} delWo={delWo} profile={profile} customEx={customEx}/>}
     {tab==='food'&&<FoodScreen meals={meals} mealsDone={mDone} addMeal={addMeal} delMeal={delMeal} setDayDone={setDayDone}/>}
     {tab==='prog'&&<ProgScreen wo={wo}/>}
     {tab==='admin'&&isAdmin&&<AdminScreen allWo={allWo} allUsers={allUsers} allProfiles={allProfiles} customEx={customEx} addEx={addEx} delEx={delEx}/>}
     <BNav tab={tab} setTab={setTab} isAdmin={isAdmin}/>
     {showP&&<ProfileSheet session={session} profile={profile} onClose={()=>setShowP(false)} onLogout={()=>{sb.auth.signOut();setShowP(false);}} onEditGoals={()=>{setShowP(false);setNeedOb(true);}}/>}
+    {showQL&&<QuickLogSheet profile={profile} customEx={customEx} addWo={addWo}
+        onClose={()=>setShowQL(false)} preType={qlType} weekNum={gwk(wo)}/>}
     {showOpt&&<div className="opt-ov"><div className="opt-card"><div style={{fontSize:44,marginBottom:10}}>🚀</div><div style={{fontSize:18,fontWeight:700,marginBottom:7}}>Dags att optimera!</div><div style={{fontSize:14,color:'var(--t2)',lineHeight:1.6,marginBottom:18}}>Du har tränat i ~2 månader! Vill du uppdatera mål och schema?</div><button className="btn btn-primary btn-full" style={{marginBottom:8}} onClick={()=>{setShowOpt(false);setNeedOb(true);sb.from('user_profiles').update({optimize_shown:true}).eq('user_id',session.user.id);}}>Ja, uppdatera!</button><button className="btn btn-ghost btn-full btn-sm" onClick={async()=>{setShowOpt(false);await sb.from('user_profiles').update({optimize_shown:true}).eq('user_id',session.user.id);}}>Inte nu</button></div></div>}
   </div>;
 }
