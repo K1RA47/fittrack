@@ -140,6 +140,9 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 .stat-box{background:var(--s3);border-radius:9px;padding:9px 4px;text-align:center}
 .stat-val{font-size:20px;font-weight:800;line-height:1;margin:3px 0}
 .stat-lbl{font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.04em}
+
+/* ── Sticky slutför button ── */
+.slutfor-bar{position:sticky;bottom:calc(var(--nav) + var(--sb) + 10px);z-index:20;padding:14px 0 2px;background:linear-gradient(to bottom,transparent,var(--bg) 30%)}
 </style>
 </head>
 <body>
@@ -606,6 +609,8 @@ function TrainScreen({wo,addWo,delWo,profile,customEx}){
   </div></div>;
 }
 
+
+
 // ── FOOD — UNIFIED PLANNER + LOG ────────────────────────────────
 const INIT_MLB={pI:-1,pG:200,cI:-1,cG:100,vI:-1,vG:150,fI:0};
 function FoodScreen({meals,mealsDone,addMeal,delMeal,setDayDone}){
@@ -754,6 +759,7 @@ function FoodScreen({meals,mealsDone,addMeal,delMeal,setDayDone}){
           <div className="custom-row"><input type="text" value={ca.n} onChange={e=>setCa(c=>({...c,n:e.target.value}))} placeholder="Annat..."/><input type="number" value={ca.k} onChange={e=>setCa(c=>({...c,k:e.target.value}))} placeholder="kcal"/><input type="number" value={ca.p} onChange={e=>setCa(c=>({...c,p:e.target.value}))} placeholder="prot"/><button className="btn btn-secondary btn-sm" onClick={()=>{if(!ca.n||!ca.k)return;addMeal(vd,ca.n,+ca.k,+ca.p||0);setCa({n:'',k:'',p:''});}}>+</button></div>
         </div>}
       </>}
+
       {/* ── LOGGAT ── */}
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8,marginTop:4}}>
         <span style={{fontSize:13,fontWeight:600,color:'var(--t2)',textTransform:'uppercase',letterSpacing:'.05em'}}>Loggat {isToday?'idag':isFuture?'(planerat)':fD(vd)}</span>
@@ -763,9 +769,16 @@ function FoodScreen({meals,mealsDone,addMeal,delMeal,setDayDone}){
       <div style={{background:entries.length>0?'var(--s2)':'transparent',border:entries.length>0?'1px solid var(--border)':'none',borderRadius:11,padding:entries.length>0?'4px 14px':0,marginBottom:10}}>
         {entries.map(e=><div key={e.id} className="log-compact"><div className="log-compact-left"><div className="log-compact-name">{e.name}</div><div className="log-compact-mac">🔥 {e.kcal} kcal · 💪 {e.protein}g P</div></div>{isToday&&<button className="db" style={{marginLeft:8}} onClick={()=>delMeal(vd,e.id)}>×</button>}</div>)}
       </div>
-      {/* ── SLUTFÖR — tydlig, alltid synlig ── */}
-      {isToday&&entries.length>0&&<button className="btn btn-primary btn-full" style={{marginBottom:8}} onClick={()=>setDayDone(vd,true)}>✅ Slutför dagen</button>}
+
       {isFuture&&entries.length>0&&<div style={{textAlign:'center',fontSize:12,color:'var(--t2)',padding:'8px 0'}}>Plan sparad för {fD(vd)} · {entries.length} måltider</div>}
+      {/* ✅ DEFINITIV FIX: Sticky knapp alltid synlig ovanför navbaren */}
+      {isToday&&entries.length>0&&!isDone&&(
+        <div className="slutfor-bar">
+          <button className="btn btn-primary btn-full" onClick={()=>setDayDone(vd,true)}>
+            ✅ Slutför dagen · {entries.length} {entries.length===1?'måltid':'måltider'} · {tot.kcal} kcal · {tot.protein}g P
+          </button>
+        </div>
+      )}
     </>}
     {/* ✅ FIX: Spacer för att undvika att nav täcker sista elementet */}
     <div style={{height:16}}/>
