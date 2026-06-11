@@ -142,7 +142,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 .stat-lbl{font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.04em}
 
 /* ── Sticky slutför button ── */
-.slutfor-bar{position:sticky;bottom:calc(var(--nav) + var(--sb) + 10px);z-index:20;padding:14px 0 2px;background:linear-gradient(to bottom,transparent,var(--bg) 30%)}
+.slutfor-bar{position:fixed;left:16px;right:16px;bottom:calc(var(--nav) + var(--sb) + 8px);z-index:20}.slutfor-spacer{height:72px}
 </style>
 </head>
 <body>
@@ -182,69 +182,132 @@ const isDurCardio=t=>DUR_CARDIO.includes(t);
 const isPureCardio=t=>ALL_CARDIO.includes(t);
 const isRefType=t=>t==='Dömt match';
 const DAY_TM={1:'gym',2:'tuesday',3:'gym',4:'football',5:'rest',6:'rest',0:'rest'};
-const DT={tuesday:{k:2800,p:190},gym:{k:2400,p:185},football:{k:2600,p:185},rest:{k:2200,p:180}};
-const PROT=[{n:'Kycklingfilé',k:110,p:23},{n:'Kycklinglårfilé',k:130,p:19},{n:'Nötfärs 10%',k:160,p:20},{n:'Nötfärs 5%',k:120,p:21},{n:'Lax',k:180,p:20},{n:'Tonfisk i vatten',k:100,p:23},{n:'Torsk / vit fisk',k:82,p:18},{n:'Räkor (kokta)',k:90,p:18},{n:'Nötbiff',k:195,p:20}];
-const CARB=[{n:'Havreris Frebaco (torrt)',k:360,p:13},{n:'Ris (torrt)',k:360,p:7},{n:'Pasta (torrt)',k:350,p:12},{n:'Potatis (rå)',k:77,p:2},{n:'Sötpotatis (rå)',k:86,p:2},{n:'Havregryn (torrt)',k:370,p:13},{n:'Ingen kolhydrat',k:0,p:0}];
+const DT={
+  gym:{k:2400,p:185,lb:'🏋️ Gymdag — 2400'},
+  football:{k:2600,p:185,lb:'⚽ Fotboll — 2600'},
+  tuesday:{k:2800,p:190,lb:'🔥 Dubbelt pass — 2800'},
+  running:{k:2500,p:175,lb:'🏃 Löpdag — 2500'},
+  walk:{k:2100,p:170,lb:'🚶 Promenad — 2100'},
+  rest:{k:2200,p:180,lb:'😴 Vila — 2200'},
+  bulk:{k:3000,p:200,lb:'💪 Bulk — 3000'},
+  cut:{k:1900,p:190,lb:'🔥 Underskott — 1900'},
+};
+const PROT=[{n:'Kycklingfilé',k:105,p:23},{n:'Kycklinglårfilé',k:135,p:19},{n:'Nötfärs 10%',k:170,p:19},{n:'Nötfärs 5%',k:130,p:20},{n:'Lax',k:180,p:20},{n:'Tonfisk i vatten (Abba)',k:110,p:25},{n:'Torsk / vit fisk',k:78,p:18},{n:'Räkor (kokta)',k:75,p:17},{n:'Nötbiff / entrecote',k:200,p:20}];
+const CARB=[{n:'Havreris Frebaco (torrt)',k:360,p:13},{n:'Ris (torrt)',k:360,p:7},{n:'Pasta (torrt)',k:360,p:12},{n:'Potatis (rå)',k:77,p:2},{n:'Sötpotatis (rå)',k:86,p:2},{n:'Havregryn (torrt)',k:370,p:13},{n:'Ingen kolhydrat',k:0,p:0}];
 const VEGG=[{n:'Broccoli',k:34,p:3},{n:'Blandad sallad',k:20,p:2},{n:'Spenat',k:23,p:3},{n:'Haricots verts',k:31,p:2},{n:'Paprika',k:31,p:1},{n:'Zucchini',k:17,p:1},{n:'Gurka + tomat',k:18,p:1}];
-const FETT=[{n:'Ingen',k:0},{n:'Olivolja 1 msk (14g)',k:124},{n:'Avokado ½ (70g)',k:112},{n:'Fetaost 30g',k:80}];
+const FETT=[{n:'Ingen',k:0},{n:'Olivolja 1 msk (14g)',k:124},{n:'Avokado ½ (70g)',k:117},{n:'Fetaost 30g',k:78}];
 const PAIR={'Kycklingfilé':'Havreris Frebaco (torrt)','Kycklinglårfilé':'Havreris Frebaco (torrt)','Nötfärs 10%':'Potatis (rå)','Nötfärs 5%':'Pasta (torrt)','Lax':'Potatis (rå)','Tonfisk i vatten':'Pasta (torrt)','Torsk / vit fisk':'Havreris Frebaco (torrt)','Räkor (kokta)':'Havreris Frebaco (torrt)','Nötbiff':'Potatis (rå)'};
 // Unified food database — complete list
 const QI={
   'Frukost':[
-    {n:'80g havregryn + 200ml mjölk + 1 banan + 3 ägg',k:720,p:37},
-    {n:'4 ägg + 2 skivor fullkornsbröd + 1 banan',k:560,p:32},
-    {n:'80g havregryn + 1 scoop vassle + 200ml mjölk',k:545,p:43},
-    {n:'60g havregryn + 200ml mjölk + 1 ägg',k:400,p:18},
-    {n:'200g Grek yoghurt 0% + 40g müsli + bär',k:370,p:20},
-    {n:'4 ägg + grönsaker + kaffe',k:350,p:28},
-    {n:'3 ägg + 1 skiva bröd + kaffe',k:330,p:22},
-    {n:'Havregrynsgröt 80g + mjölk + honung',k:420,p:12},
-    {n:'2 skivor fullkornsbröd + ägg + skinka',k:380,p:22},
+    {n:'80g havregryn + 200ml mjölk + banan + 3 ägg',k:760,p:38},
+    {n:'4 ägg + 2 skivor fullkornsbröd + banan',k:620,p:33},
+    {n:'80g havregryn + vassle + 200ml mjölk',k:525,p:42},
+    {n:'60g havregryn + 200ml mjölk + 1 ägg',k:415,p:21},
+    {n:'200g Grek yoghurt 0% + müsli + bär',k:295,p:25},
+    {n:'4 ägg + grönsaker + kaffe',k:360,p:27},
+    {n:'3 ägg + 1 skiva bröd + kaffe',k:345,p:22},
+    {n:'Gröt 80g + mjölk + bär',k:450,p:18},
+    {n:'2 skivor bröd + ägg + kalkon',k:340,p:23},
+    {n:'Smoothie: banan + mjölk + vassle',k:330,p:30},
+    {n:'2 ägg + bröd + ost + kaffe',k:355,p:22},
   ],
   'Pre-snack':[
-    {n:'50g havregryn + 200ml mjölk',k:310,p:11},
-    {n:'50g havregryn + vatten + 1 banan',k:275,p:8},
-    {n:'1 banan + 3 riskakor',k:195,p:3},
-    {n:'1 banan + 1 msk jordnötssmör',k:185,p:5},
-    {n:'2 skivor bröd + jordnötssmör',k:310,p:10},
+    {n:'50g havregryn + 200ml mjölk',k:290,p:14},
+    {n:'50g havregryn + vatten + banan',k:295,p:8},
+    {n:'Banan + 3 riskakor',k:195,p:3},
+    {n:'Banan + jordnötssmör',k:200,p:5},
+    {n:'2 skivor bröd + jordnötssmör',k:270,p:11},
+    {n:'2 riskakor + 30g ost',k:185,p:10},
   ],
   'Kvällssnack':[
-    {n:'200g Grek yoghurt 0% + 1 scoop kasein',k:240,p:37},
-    {n:'1 scoop kasein + 250ml mjölk',k:240,p:30},
-    {n:'200g keso',k:160,p:22},
-    {n:'1 scoop kasein + vatten',k:120,p:25},
-    {n:'150g Grek yoghurt 0%',k:90,p:14},
-    {n:'100g keso + 1 banan',k:249,p:23},
+    {n:'200g Grek yoghurt 0% + kasein',k:220,p:44},
+    {n:'Kasein + 250ml mjölk',k:235,p:33},
+    {n:'200g keso Arla 4%',k:190,p:24},
+    {n:'Kasein + vatten',k:110,p:24},
+    {n:'150g Grek yoghurt 0% + bär',k:95,p:15},
+    {n:'100g keso + banan',k:195,p:14},
+    {n:'200g kvarg Lindahls',k:140,p:22},
+  ],
+  'Frukt':[
+    {n:'1 banan (120g)',k:107,p:1},
+    {n:'1 äpple (150g)',k:80,p:0},
+    {n:'1 apelsin',k:60,p:1},
+    {n:'1 kiwi',k:45,p:1},
+    {n:'1 päron',k:70,p:0},
+    {n:'1 nektarin',k:50,p:1},
+    {n:'100g jordgubbar',k:33,p:1},
+    {n:'100g blåbär',k:57,p:1},
+    {n:'100g hallon',k:40,p:1},
+    {n:'100g vindruvor',k:67,p:1},
+    {n:'100g vattenmelon',k:30,p:1},
+    {n:'100g mango',k:60,p:1},
+    {n:'100g ananas',k:50,p:1},
+    {n:'3 dadlar (torkade)',k:85,p:1},
+    {n:'30g russin',k:90,p:1},
   ],
   'Snack':[
-    {n:'1 banan',k:89,p:1},{n:'1 äpple',k:52,p:0},{n:'1 kiwi',k:61,p:1},
-    {n:'3 riskakor',k:114,p:2},{n:'Proteinshake + vatten',k:120,p:25},
-    {n:'2 hårdkokta ägg',k:155,p:13},{n:'Näve mandlar 30g',k:174,p:6},
-    {n:'1 apelsin',k:47,p:1},{n:'100g blåbär',k:57,p:1},
-    {n:'1 banan + 200g Grek yoghurt',k:209,p:19},
+    {n:'3 riskakor',k:105,p:2},
+    {n:'Proteinshake + vatten',k:120,p:25},
+    {n:'2 hårdkokta ägg',k:155,p:13},
+    {n:'Mandlar 30g',k:174,p:6},
+    {n:'Banan + Grek yoghurt',k:215,p:21},
+    {n:'Proteinbar (medel)',k:220,p:20},
+    {n:'Riskakor + hummus 50g',k:150,p:5},
+    {n:'Cashewnötter 30g',k:175,p:5},
+    {n:'Jordnötter 30g',k:180,p:8},
+    {n:'Mörk choklad 70% 30g',k:170,p:2},
+    {n:'1 ägg (60g)',k:72,p:6},
   ],
   'Dryck':[
-    {n:'Kaffe (svart)',k:2,p:0},
-    {n:'Kaffe + 1 msk mjölk',k:12,p:1},
-    {n:'Kaffe latte (stor, 300ml mjölk)',k:130,p:7},
-    {n:'Apelsinjuice 200ml',k:84,p:1},
-    {n:'250ml helmjölk',k:154,p:8},
-    {n:'250ml lättmjölk',k:115,p:9},
-    {n:'1 scoop vassle + 250ml helmjölk',k:275,p:33},
-    {n:'1 scoop vassle + 250ml lättmjölk',k:235,p:34},
-    {n:'1 scoop vassle + vatten',k:120,p:25},
-    {n:'250ml proteinmjölk Arla',k:130,p:15},
-    {n:'Pepsi Max / Nollkaloridryck',k:1,p:0},
+    {n:'Kaffe svart',k:2,p:0},
+    {n:'Kaffe + mjölk',k:7,p:0},
+    {n:'Latte stor (300ml)',k:150,p:10},
+    {n:'Apelsinjuice 200ml',k:88,p:1},
+    {n:'Helmjölk 250ml',k:150,p:8},
+    {n:'Mellanmjölk 250ml',k:115,p:8},
+    {n:'Lättmjölk 250ml',k:90,p:9},
+    {n:'Havremjölk Oatly 250ml',k:115,p:3},
+    {n:'Vassle + mellanmjölk',k:240,p:33},
+    {n:'Vassle + lättmjölk',k:210,p:33},
+    {n:'Vassle + vatten',k:120,p:25},
+    {n:'Arla Proteinmjölk 250ml',k:95,p:10},
+    {n:'Pepsi Max / nollkal',k:1,p:0},
+    {n:'Nocco BCAA',k:13,p:0},
     {n:'Vatten',k:0,p:0},
   ],
-  'Övrigt':[
-    {n:'1 dl sås/dressing',k:60,p:1},
-    {n:'1 msk olivolja',k:124,p:0},
-    {n:'1 avokado (140g)',k:224,p:3},
-    {n:'30g fetaost',k:80,p:4},
+  'Såser':[
     {n:'Ketchup 1 msk',k:15,p:0},
-    {n:'Majonnäs 1 msk',k:70,p:0},
-    {n:'Hummus 50g',k:95,p:4},
+    {n:'Senap 1 msk',k:10,p:1},
+    {n:'Majonnäs 1 msk',k:100,p:0},
+    {n:'Soja 1 msk',k:8,p:1},
+    {n:'Sweet chili 1 msk',k:30,p:0},
+    {n:'BBQ-sås 1 msk',k:25,p:0},
+    {n:'Sriracha 1 tsk',k:5,p:0},
+    {n:'Grädde 15% 1 dl',k:135,p:3},
+    {n:'Creme fraiche 34% 1 dl',k:310,p:2},
+    {n:'Olivolja 1 msk (14g)',k:124,p:0},
+    {n:'Smör 1 msk (14g)',k:100,p:0},
+    {n:'Hummus 50g',k:85,p:3},
+    {n:'Tzatziki 50g',k:40,p:2},
+    {n:'Guacamole 50g',k:75,p:1},
+    {n:'Pesto 1 msk',k:80,p:2},
+  ],
+  'Övrigt':[
+    {n:'½ avokado (70g)',k:112,p:1},
+    {n:'30g fetaost',k:80,p:4},
+    {n:'30g hårdost (28%)',k:115,p:8},
+    {n:'30g mozzarella',k:75,p:6},
+    {n:'1 skiva bröd 30g',k:75,p:3},
+    {n:'1 tortillabröd stor',k:180,p:5},
+    {n:'100g kokt ris',k:130,p:3},
+    {n:'100g kokt pasta',k:135,p:5},
+    {n:'100g kokt potatis',k:86,p:2},
+    {n:'100g potatismos',k:95,p:2},
+    {n:'100g couscous kokt',k:112,p:4},
+    {n:'100g kalkonpålägg',k:100,p:18},
+    {n:'100g kycklingpålägg',k:95,p:17},
+    {n:'2 Wasa knäckebröd',k:50,p:2},
   ],
 };
 // Planned meal defaults per slot
@@ -478,7 +541,7 @@ function WeeklyStatsCard({workouts}){
 function TodayScreen({wo,mealTots,onGoTrain,onGoFood,profile,onSaveSched}){
   const [showC,setShowC]=useState(false);
   const now=new Date(),plan=getPlan(profile),tp=plan[now.getDay()];
-  const wk=gwk(wo),tgt=DT[DAY_TM[now.getDay()]];
+  const wk=gwk(wo),tgt=DT[DAY_TM[now.getDay()]]||DT.rest;
   const todayWo=wo.filter(w=>w.date===tod());
   const tc={gym:'var(--blue)',football:'var(--green)',rest:'var(--t2)',cardio:'var(--amber)'};
   return <>
@@ -613,7 +676,7 @@ function TrainScreen({wo,addWo,delWo,profile,customEx}){
 
 // ── FOOD — UNIFIED PLANNER + LOG ────────────────────────────────
 const INIT_MLB={pI:-1,pG:200,cI:-1,cG:100,vI:-1,vG:150,fI:0};
-function FoodScreen({meals,mealsDone,addMeal,delMeal,setDayDone}){
+function FoodScreen({meals,mealsDone,addMeal,delMeal,setDayDone,profile}){
   const [dt,setDt]=useState(DAY_TM[new Date().getDay()]);
   const [vd,setVd]=useState(tod());
   const [qCat,setQCat]=useState('Snack');
@@ -707,10 +770,7 @@ function FoodScreen({meals,mealsDone,addMeal,delMeal,setDayDone}){
     {/* Header */}
     <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
       <h2>Mat</h2>
-      <select value={dt} onChange={e=>setDt(e.target.value)} style={{width:'auto',fontSize:12,padding:'6px 10px'}}>
-        <option value="tuesday">Tisdag—2800</option><option value="gym">Gym—2400</option>
-        <option value="football">Fotboll—2600</option><option value="rest">Vila—2200</option>
-      </select>
+      <select value={dt} onChange={e=>setDt(e.target.value)} style={{width:'auto',fontSize:11,padding:'5px 8px',maxWidth:185}}>{Object.entries(DT).map(([k,v])=><option key={k} value={k}>{v.lb}</option>)}</select>
     </div>
     {/* Date nav — ingen spärr på framtida datum */}
     <div className="datenav">
@@ -771,14 +831,14 @@ function FoodScreen({meals,mealsDone,addMeal,delMeal,setDayDone}){
       </div>
 
       {isFuture&&entries.length>0&&<div style={{textAlign:'center',fontSize:12,color:'var(--t2)',padding:'8px 0'}}>Plan sparad för {fD(vd)} · {entries.length} måltider</div>}
-      {/* ✅ DEFINITIV FIX: Sticky knapp alltid synlig ovanför navbaren */}
-      {isToday&&entries.length>0&&!isDone&&(
+      {isToday&&entries.length>0&&!isDone&&<>
+        <div className="slutfor-spacer"/>
         <div className="slutfor-bar">
           <button className="btn btn-primary btn-full" onClick={()=>setDayDone(vd,true)}>
             ✅ Slutför dagen · {entries.length} {entries.length===1?'måltid':'måltider'} · {tot.kcal} kcal · {tot.protein}g P
           </button>
         </div>
-      )}
+      </>}
     </>}
     {/* ✅ FIX: Spacer för att undvika att nav täcker sista elementet */}
     <div style={{height:16}}/>
@@ -1006,7 +1066,7 @@ function App(){
         onGoTrain={type=>{setQlType(type||'');setShowQL(true);}}
         onGoFood={()=>setTab('food')} profile={profile} onSaveSched={saveSched}/>}
     {tab==='train'&&<TrainScreen wo={wo} addWo={addWo} delWo={delWo} profile={profile} customEx={customEx}/>}
-    {tab==='food'&&<FoodScreen meals={meals} mealsDone={mDone} addMeal={addMeal} delMeal={delMeal} setDayDone={setDayDone}/>}
+    {tab==='food'&&<FoodScreen meals={meals} mealsDone={mDone} addMeal={addMeal} delMeal={delMeal} setDayDone={setDayDone} profile={profile}/>}
     {tab==='prog'&&<ProgScreen wo={wo}/>}
     {tab==='admin'&&isAdmin&&<AdminScreen allWo={allWo} allUsers={allUsers} allProfiles={allProfiles} customEx={customEx} addEx={addEx} delEx={delEx}/>}
     <BNav tab={tab} setTab={setTab} isAdmin={isAdmin}/>
